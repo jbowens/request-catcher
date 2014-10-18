@@ -49,3 +49,24 @@ table#caught-requests td {
 table#caught-requests td.body {
 }
 
+#raw-popup {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 500px;
+  margin-left: -450px;
+  margin-top: -250px;
+  background: #FFF;
+  border: 1px #EEE solid;
+  overflow: auto;
+}
+
+#raw-popup h4 {
+  text-align: center;
+}
+
+#raw-popup #raw-content {
+  margin: 60px;
+}

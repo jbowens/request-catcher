@@ -28,6 +28,7 @@ window.catcher.insertRequest = function(req) {
   console.log(req);
   var time = new Date(req.time);
   var tr = document.createElement('tr');
+  $(tr).data('r', req);
   td(tr, req.method, 'method');
   td(tr, req.path, 'path');
   td(tr, time.toString(), 'time');
@@ -42,6 +43,7 @@ window.catcher.insertRequest = function(req) {
   $(optionsTd).append(a);
   $(tr).append(optionsTd);
 
+  window.catcher.addListeners(tr);
   window.catcher.heading.after(tr);
   if (!window.catcher.table.is(':visible')) {
     window.catcher.noRequests.hide();
@@ -49,9 +51,21 @@ window.catcher.insertRequest = function(req) {
   }
 };
 
+window.catcher.addListeners = function(row) {
+  $(row).find('.show-raw').click(window.catcher.showRaw);
+};
+
+window.catcher.showRaw = function(evt) {
+  var req = $(evt.currentTarget).closest('tr').data('r');
+  window.catcher.rawContent.text(req.raw_request);
+  window.catcher.rawPopup.show();
+};
+
 $(document).ready(function() {
   window.catcher.table = $('table#caught-requests');
   window.catcher.heading = $('table#caught-requests tr.heading');
   window.catcher.noRequests = $('#no-requests');
+  window.catcher.rawPopup = $('#raw-popup');
+  window.catcher.rawContent = $('#raw-popup #raw-content');
   window.catcher.connect();
 });
