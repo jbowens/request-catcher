@@ -7,12 +7,12 @@ import (
 )
 
 const outputChannelBuffer = 5
-const pingFrequency = time.Second
+const pingFrequency = 10 * time.Second
 const writeWait = 5 * time.Second
 const maxMessageSize = 1024
 
 type client struct {
-	pingTicker time.Ticker
+	pingTicker *time.Ticker
 	catcher    *Catcher
 	conn       *websocket.Conn
 	output     chan interface{}
@@ -20,9 +20,10 @@ type client struct {
 
 func newClient(catcher *Catcher, conn *websocket.Conn) *client {
 	c := &client{
-		catcher: catcher,
-		conn:    conn,
-		output:  make(chan interface{}, outputChannelBuffer),
+		pingTicker: time.NewTicker(pingFrequency),
+		catcher:    catcher,
+		conn:       conn,
+		output:     make(chan interface{}, outputChannelBuffer),
 	}
 	go c.writeLoop()
 	go c.readLoop()
@@ -30,6 +31,7 @@ func newClient(catcher *Catcher, conn *websocket.Conn) *client {
 }
 
 func (c *client) Ping() error {
+	c.catcher.logger.Info("Pinging client %v", c)
 	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.PingMessage, []byte{})
 }
