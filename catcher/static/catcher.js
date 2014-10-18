@@ -5,6 +5,8 @@ window.catcher.connect = function() {
         conn = new WebSocket("ws://" + window.location.host + "/init-client");
         conn.onclose = function(evt) {
             console.log("connection closed", evt);
+            // Reconnet after a pause.
+            setTimeout(window.catcher.connect, 1000);
         };
         conn.onmessage = function(evt) {
             var req = JSON.parse(evt.data);
