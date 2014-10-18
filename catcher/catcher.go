@@ -3,6 +3,7 @@ package catcher
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -10,6 +11,8 @@ import (
 )
 
 type Catcher struct {
+	host      string
+	port      int
 	router    *mux.Router
 	upgrader  websocket.Upgrader
 	clients   map[*websocket.Conn]*client
@@ -17,8 +20,10 @@ type Catcher struct {
 	logger    *logging.Logger
 }
 
-func NewCatcher() *Catcher {
+func NewCatcher(host string, port int) *Catcher {
 	catcher := &Catcher{
+		host:   host,
+		port:   port,
 		router: mux.NewRouter(),
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  1024,
@@ -42,7 +47,9 @@ func (c *Catcher) init() {
 func (c *Catcher) Start() {
 	go c.broadcaster()
 	http.Handle("/", c.router)
-	http.ListenAndServe(":4000", nil)
+	fullHost := c.host + ":" + strconv.Itoa(c.port)
+	c.logger.Info("Listening on %v on port %v", c.host, c.port)
+	http.ListenAndServe(fullHost, nil)
 }
 
 func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {

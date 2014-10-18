@@ -5,6 +5,7 @@ html, body {
 }
 
 a {
+  color: #1B70C4;
   text-decoration: none;
 }
 
@@ -26,6 +27,22 @@ div#no-requests {
   text-align: center;
 }
 
+div#no-requests .message {
+  font-size: 47pt;
+}
+
+div#no-requests .try-it {
+  margin-top: 100px;
+}
+
+div#no-requests .code {
+  background: #333;
+  color: #FFF;
+  border-radius: 0.25em;
+  padding: 0.5em;
+  font-family: monospace;
+}
+
 table#caught-requests {
   width: 100%;
   display: none;
@@ -41,9 +58,9 @@ table#caught-requests td {
 }
 
 table#caught-requests td {
-  min-height: 200px;
+  padding: 15px 0;
   max-width: 400px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 table#caught-requests td.body {
@@ -54,13 +71,18 @@ table#caught-requests td.body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 900px;
+  width: 800px;
   height: 500px;
-  margin-left: -450px;
+  margin-left: -400px;
   margin-top: -250px;
-  background: #FFF;
-  border: 1px #EEE solid;
-  overflow: auto;
+  background: #FEFEFE;
+  border: 1px #D5D5D5 solid;
+}
+
+#raw-popup .close-popup {
+  cursor: pointer;
+  font-size: 1.5em;
+  margin: 25px;
 }
 
 #raw-popup h4 {
@@ -68,5 +90,14 @@ table#caught-requests td.body {
 }
 
 #raw-popup #raw-content {
-  margin: 60px;
+  margin-top: 10%;
+  width: 80%;
+  height: 80%;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.frown {
+  font-size: 7em;
+  text-align: center;
 }

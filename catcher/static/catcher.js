@@ -31,7 +31,18 @@ window.catcher.insertRequest = function(req) {
   $(tr).data('r', req);
   td(tr, req.method, 'method');
   td(tr, req.path, 'path');
-  td(tr, time.toString(), 'time');
+
+  var dateDiv = document.createElement('div');
+  var timeDiv = document.createElement('div');
+  dateDiv.className = 'date';
+  timeDiv.className = 'time';
+  $(dateDiv).text(window.catcher.formatDate(time));
+  $(timeDiv).text(window.catcher.formatTime(time));
+  var dateTd = $('<td></td>');
+  dateTd.append(dateDiv);
+  dateTd.append(timeDiv);
+  $(tr).append(dateTd);
+
   td(tr, req.body, 'body');
 
   var optionsTd = document.createElement('td');
@@ -51,11 +62,20 @@ window.catcher.insertRequest = function(req) {
   }
 };
 
+window.catcher.formatDate = function(date) {
+  return moment(date).format("dddd, MMMM Do YYYY");
+};
+
+window.catcher.formatTime = function(date) {
+  return moment(date).format("h:mm:ss a");
+};
+
 window.catcher.addListeners = function(row) {
   $(row).find('.show-raw').click(window.catcher.showRaw);
 };
 
 window.catcher.showRaw = function(evt) {
+  evt.preventDefault();
   var req = $(evt.currentTarget).closest('tr').data('r');
   window.catcher.rawContent.text(req.raw_request);
   window.catcher.rawPopup.show();
@@ -67,5 +87,12 @@ $(document).ready(function() {
   window.catcher.noRequests = $('#no-requests');
   window.catcher.rawPopup = $('#raw-popup');
   window.catcher.rawContent = $('#raw-popup #raw-content');
+
+  $('#raw-popup .close-popup').click(function(e) {
+    window.catcher.rawPopup.hide();
+  });
+
+  $('#hostname').text(window.location.host);
+
   window.catcher.connect();
 });

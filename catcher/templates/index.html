@@ -2,16 +2,23 @@
 <head>
     <title>webhooks catcher</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/global.css" />
     <script type="text/javascript" src="/static/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/static/moment.min.js"></script>
     <script type="text/javascript" src="/static/catcher.js"></script>
 </head>
 <body>
         <div id="content">
-          <h1>Webhooks Catcher</h1>
+          <h1>Request Catcher</h1>
 
           <div id="no-requests">
-            No requests have been received yet. :(
+            <div class="message">No requests have been received yet. :(</div>
+            <div class="try-it">
+              <span class="code">
+                curl -X POST -d 'Hello World!' http://<span id="hostname">requestcatcher.com</span>/test
+              </span>
+            </div>
           </div>
 
           <table id="caught-requests">
@@ -20,14 +27,14 @@
               <th>Path</th>
               <th>Time</th>
               <th>Body</th>
-              <th></th>
+              <th>Details</th>
             </tr>
 
           </table>
       </div>
 
       <div id="raw-popup">
-        <h4>Raw request</h4>
+        <i class="fa fa-close close-popup"></i>
         <pre id="raw-content"></pre>
       </div>
 </body>

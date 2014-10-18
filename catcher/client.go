@@ -7,8 +7,8 @@ import (
 )
 
 const outputChannelBuffer = 5
-const pingFrequency = 10 * time.Second
-const readDeadline = time.Minute
+const pingFrequency = time.Second
+const writeWait = 5 * time.Second
 const maxMessageSize = 1024
 
 type client struct {
@@ -30,10 +30,12 @@ func newClient(catcher *Catcher, conn *websocket.Conn) *client {
 }
 
 func (c *client) Ping() error {
+	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.PingMessage, []byte{})
 }
 
 func (c *client) Close() error {
+	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 }
 
@@ -74,9 +76,9 @@ func (c *client) readLoop() {
 	// We don't care about what the client sends to us, but we need to
 	// read it to keep the connection fresh.
 	c.conn.SetReadLimit(maxMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(readDeadline))
-	c.conn.SetPongHandler(func(string) error {
-		c.conn.SetReadDeadline(time.Now().Add(readDeadline))
+	c.conn.SetReadDeadline(time.Time{})
+	c.conn.SetPongHandler(func(msg string) error {
+		c.catcher.logger.Info("pong from %v, msg: %v", c, msg)
 		return nil
 	})
 	for {
