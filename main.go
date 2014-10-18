@@ -1,8 +1,8 @@
 package main
 
-import "jackson/webhook-catcher/catcher"
+import "github.com/jbowens/request-catcher/catcher"
 
 func main() {
-	webhooksCatcher := catcher.NewCatcher()
-	webhooksCatcher.Start()
+	requestCatcher := catcher.NewCatcher()
+	requestCatcher.Start()
 }
