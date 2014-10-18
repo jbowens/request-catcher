@@ -2,7 +2,7 @@ window.catcher = window.catcher || {};
 
 window.catcher.connect = function() {
     if (window.WebSocket) {
-        conn = new WebSocket("ws://localhost:4000/init-client");
+        conn = new WebSocket("ws://" + window.location.host + "/init-client");
         conn.onclose = function(evt) {
             console.log("connection closed", evt);
         };

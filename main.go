@@ -1,8 +1,22 @@
 package main
 
-import "github.com/jbowens/request-catcher/catcher"
+import (
+	"os"
+	"strconv"
+
+	"github.com/jbowens/request-catcher/catcher"
+)
+
+const defaultPort = 80
 
 func main() {
-	requestCatcher := catcher.NewCatcher("localhost", 4000)
+	args := os.Args
+	host := args[1]
+	port, err := strconv.Atoi(args[2])
+	if err != nil {
+		port = defaultPort
+	}
+
+	requestCatcher := catcher.NewCatcher(host, port)
 	requestCatcher.Start()
 }
