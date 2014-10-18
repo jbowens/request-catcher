@@ -1,0 +1,43 @@
+html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Open Sans', sans-serif;
+}
+
+#content {
+        width: 1000px;
+        margin: 50px auto;
+}
+
+h1 {
+        color: #222;
+}
+
+div#no-requests {
+  padding: 100px;
+  text-align: center;
+}
+
+table#caught-requests {
+  width: 100%;
+  display: none;
+}
+
+table#caught-requests th {
+  text-align: left;
+}
+
+table#caught-requests th,
+table#caught-requests td {
+  padding: 0.25em;
+}
+
+table#caught-requests td {
+  min-height: 200px;
+  max-width: 400px;
+  overflow: scroll;
+}
+
+table#caught-requests td.body {
+}
+
