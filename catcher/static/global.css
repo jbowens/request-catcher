@@ -4,6 +4,14 @@ html, body {
         font-family: 'Open Sans', sans-serif;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 #content {
         width: 1000px;
         margin: 50px auto;

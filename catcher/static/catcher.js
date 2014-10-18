@@ -32,6 +32,16 @@ window.catcher.insertRequest = function(req) {
   td(tr, req.path, 'path');
   td(tr, time.toString(), 'time');
   td(tr, req.body, 'body');
+
+  var optionsTd = document.createElement('td');
+  $(optionsTd).addClass('options');
+  var a = document.createElement('a');
+  $(a).addClass('show-raw');
+  $(a).text('raw');
+  $(a).attr('href', '#');
+  $(optionsTd).append(a);
+  $(tr).append(optionsTd);
+
   window.catcher.heading.after(tr);
   if (!window.catcher.table.is(':visible')) {
     window.catcher.noRequests.hide();
