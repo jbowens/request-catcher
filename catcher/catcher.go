@@ -11,13 +11,12 @@ import (
 )
 
 type Catcher struct {
-	host      string
-	port      int
-	router    *mux.Router
-	upgrader  websocket.Upgrader
-	clients   map[*websocket.Conn]*client
-	broadcast chan *CaughtRequest
-	logger    *logging.Logger
+	host     string
+	port     int
+	router   *mux.Router
+	upgrader websocket.Upgrader
+	hosts    map[string]*Host
+	logger   *logging.Logger
 }
 
 func NewCatcher(host string, port int) *Catcher {
@@ -29,9 +28,8 @@ func NewCatcher(host string, port int) *Catcher {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
-		clients:   make(map[*websocket.Conn]*client),
-		broadcast: make(chan *CaughtRequest),
-		logger:    logging.MustGetLogger("request-catcher"),
+		hosts:  make(map[string]*Host),
+		logger: logging.MustGetLogger("request-catcher"),
 	}
 	catcher.init()
 	return catcher
@@ -45,11 +43,21 @@ func (c *Catcher) init() {
 }
 
 func (c *Catcher) Start() {
-	go c.broadcaster()
 	http.Handle("/", c.router)
 	fullHost := c.host + ":" + strconv.Itoa(c.port)
 	c.logger.Info("Listening on %v on port %v", c.host, c.port)
 	http.ListenAndServe(fullHost, nil)
+}
+
+func (c *Catcher) getHost(hostString string) *Host {
+	hostString = hostWithoutPort(hostString)
+
+	if host, ok := c.hosts[hostString]; ok {
+		return host
+	}
+	host := newHost(hostString)
+	c.hosts[hostString] = host
+	return host
 }
 
 func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,19 +70,13 @@ func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "not found")
 		return
 	}
-	c.broadcast <- convertRequest(r)
-}
-
-func (c *Catcher) broadcaster() {
-	for req := range c.broadcast {
-		for _, client := range c.clients {
-			client.output <- req
-		}
-	}
+	caughtRequest := convertRequest(r)
+	host := c.getHost(caughtRequest.Host)
+	c.logger.Info("Routing caught request to %v", host)
+	host.broadcast <- caughtRequest
 }
 
 func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Initializing a new client from %v", r.RemoteAddr)
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
@@ -86,6 +88,7 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := newClient(c, ws)
-	c.clients[ws] = client
+	clientHost := c.getHost(r.Host)
+	c.logger.Info("Initializing a new client on host %v", clientHost.Host)
+	clientHost.addClient(newClient(c, clientHost, ws))
 }

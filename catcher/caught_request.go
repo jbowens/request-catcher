@@ -13,6 +13,7 @@ import (
 // catch.
 type CaughtRequest struct {
 	Time          time.Time   `json:"time"`
+	Host          string      `json:"host"`
 	Method        string      `json:"method"`
 	Path          string      `json:"path"`
 	Headers       http.Header `json:"headers"`
@@ -31,8 +32,11 @@ func convertRequest(req *http.Request) *CaughtRequest {
 		fmt.Printf("Error reading body: %v", err)
 	}
 
+	host := hostWithoutPort(req.Host)
+
 	r := &CaughtRequest{
 		Time:          time.Now(),
+		Host:          host,
 		Method:        req.Method,
 		Path:          req.RequestURI,
 		Headers:       req.Header,

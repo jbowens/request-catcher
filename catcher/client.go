@@ -14,14 +14,16 @@ const maxMessageSize = 1024
 type client struct {
 	pingTicker *time.Ticker
 	catcher    *Catcher
+	host       *Host
 	conn       *websocket.Conn
 	output     chan interface{}
 }
 
-func newClient(catcher *Catcher, conn *websocket.Conn) *client {
+func newClient(catcher *Catcher, host *Host, conn *websocket.Conn) *client {
 	c := &client{
 		pingTicker: time.NewTicker(pingFrequency),
 		catcher:    catcher,
+		host:       host,
 		conn:       conn,
 		output:     make(chan interface{}, outputChannelBuffer),
 	}
@@ -31,7 +33,7 @@ func newClient(catcher *Catcher, conn *websocket.Conn) *client {
 }
 
 func (c *client) Ping() error {
-	c.catcher.logger.Info("Pinging client %v", c)
+	c.catcher.logger.Info("Pinging a client")
 	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.PingMessage, []byte{})
 }
@@ -47,10 +49,10 @@ func (c *client) SendJSON(obj interface{}) error {
 
 func (c *client) writeLoop() {
 	defer func() {
-		c.catcher.logger.Info("Client %v exiting", c)
+		c.catcher.logger.Info("Client exiting")
 		c.pingTicker.Stop()
 		c.conn.Close()
-		delete(c.catcher.clients, c.conn)
+		delete(c.host.clients, c.conn)
 	}()
 
 	for {
@@ -80,7 +82,7 @@ func (c *client) readLoop() {
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Time{})
 	c.conn.SetPongHandler(func(msg string) error {
-		c.catcher.logger.Info("pong from %v, msg: %v", c, msg)
+		c.catcher.logger.Debug("Pong from a client")
 		return nil
 	})
 	for {
