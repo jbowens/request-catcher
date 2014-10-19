@@ -20,6 +20,7 @@ a:hover {
 
 h1 {
   color: #222;
+  margin: 0.5em;
 }
 
 div#no-requests {
