@@ -59,16 +59,18 @@ table#caught-requests td {
 }
 
 table#caught-requests td {
-  padding: 15px 0;
+  padding: 15px 5px;
   max-width: 400px;
   overflow: auto;
+  border-bottom: 1px #EEE solid;
 }
 
-table#caught-requests td.timestamp {
+table#caught-requests td .method-and-path {
+  font-size: 1.4em;
+}
+
+table#caught-requests div.timestamp {
   font-size: 0.8em;
-}
-
-table#caught-requests td.body {
 }
 
 #raw-popup {

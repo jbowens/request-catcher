@@ -26,24 +26,37 @@ var td = function(tr, value, className) {
   $(tr).append(cell);
 };
 
-window.catcher.insertRequest = function(req) {
-  console.log(req);
-  var time = new Date(req.time);
-  var tr = document.createElement('tr');
-  $(tr).data('r', req);
-  td(tr, req.method, 'method');
-  td(tr, req.path, 'path');
-
+var makeDateTime = function(time) {
   var dateDiv = document.createElement('div');
   var timeDiv = document.createElement('div');
   dateDiv.className = 'date';
   timeDiv.className = 'time';
   $(dateDiv).text(window.catcher.formatDate(time));
   $(timeDiv).text(window.catcher.formatTime(time));
-  var dateTd = $('<td class="timestamp"></td>');
-  dateTd.append(dateDiv);
-  dateTd.append(timeDiv);
-  $(tr).append(dateTd);
+  var dateTime = $('<div class="timestamp"></div>');
+  dateTime.append(dateDiv);
+  dateTime.append(timeDiv);
+  return dateTime;
+};
+
+var makeDiv = function(text, className) {
+  var div = document.createElement('div');
+  $(div).text(text);
+  $(div).addClass(className);
+  return div;
+};
+
+window.catcher.insertRequest = function(req) {
+  console.log(req);
+  var time = new Date(req.time);
+  var tr = document.createElement('tr');
+  $(tr).data('r', req);
+
+  var mainTd = document.createElement('td');
+  var methodAndPath = makeDiv(req.method + ' ' + req.path, 'method-and-path');
+  var dateTime = makeDateTime(time);
+  $(mainTd).append(methodAndPath, dateTime);
+  tr.appendChild(mainTd);
 
   td(tr, req.body, 'body');
 
