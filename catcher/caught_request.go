@@ -41,7 +41,7 @@ func convertRequest(req *http.Request) *CaughtRequest {
 		Path:          req.RequestURI,
 		Headers:       req.Header,
 		ContentLength: req.ContentLength,
-		RemoteAddr:    req.RemoteAddr,
+		RemoteAddr:    hostWithoutPort(req.RemoteAddr),
 		Form:          req.PostForm,
 		Body:          string(body),
 		RawRequest:    string(raw_request),
