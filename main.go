@@ -16,7 +16,8 @@ func main() {
 	if err != nil {
 		port = defaultPort
 	}
+	rootHost := args[3]
 
-	requestCatcher := catcher.NewCatcher(host, port)
+	requestCatcher := catcher.NewCatcher(host, port, rootHost)
 	requestCatcher.Start()
 }

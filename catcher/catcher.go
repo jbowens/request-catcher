@@ -11,6 +11,7 @@ import (
 )
 
 type Catcher struct {
+	rootHost string
 	host     string
 	port     int
 	router   *mux.Router
@@ -19,11 +20,12 @@ type Catcher struct {
 	logger   *logging.Logger
 }
 
-func NewCatcher(host string, port int) *Catcher {
+func NewCatcher(host string, port int, rootHost string) *Catcher {
 	catcher := &Catcher{
-		host:   host,
-		port:   port,
-		router: mux.NewRouter(),
+		rootHost: rootHost,
+		host:     host,
+		port:     port,
+		router:   mux.NewRouter(),
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
@@ -36,7 +38,7 @@ func NewCatcher(host string, port int) *Catcher {
 }
 
 func (c *Catcher) init() {
-	c.router.HandleFunc("/", c.rootHandler).Host(c.host)
+	c.router.HandleFunc("/", c.rootHandler).Host(c.rootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
@@ -62,6 +64,7 @@ func (c *Catcher) getHost(hostString string) *Host {
 }
 
 func (c *Catcher) rootHandler(w http.ResponseWriter, r *http.Request) {
+	c.logger.Info("request to root page")
 	http.ServeFile(w, r, "catcher/templates/root.html")
 }
 
