@@ -40,7 +40,7 @@ window.catcher.insertRequest = function(req) {
   timeDiv.className = 'time';
   $(dateDiv).text(window.catcher.formatDate(time));
   $(timeDiv).text(window.catcher.formatTime(time));
-  var dateTd = $('<td></td>');
+  var dateTd = $('<td class="timestamp"></td>');
   dateTd.append(dateDiv);
   dateTd.append(timeDiv);
   $(tr).append(dateTd);

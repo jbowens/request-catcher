@@ -1,7 +1,7 @@
 html, body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -14,12 +14,12 @@ a:hover {
 }
 
 #content {
-        width: 1000px;
-        margin: 30px auto;
+  width: 1000px;
+  margin: 30px auto;
 }
 
 h1 {
-        color: #222;
+  color: #222;
 }
 
 div#no-requests {
@@ -61,6 +61,10 @@ table#caught-requests td {
   padding: 15px 0;
   max-width: 400px;
   overflow: auto;
+}
+
+table#caught-requests td.timestamp {
+  font-size: 0.8em;
 }
 
 table#caught-requests td.body {
