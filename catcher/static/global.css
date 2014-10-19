@@ -60,7 +60,6 @@ table#caught-requests td {
 
 table#caught-requests td {
   padding: 15px 5px;
-  max-width: 400px;
   overflow: auto;
   border-bottom: 1px #EEE solid;
 }
@@ -71,6 +70,9 @@ table#caught-requests td .method-and-path {
 
 table#caught-requests div.timestamp {
   font-size: 0.8em;
+}
+table#caught-requests div.remote-addr {
+  font-size: 0.5em;
 }
 
 #raw-popup {

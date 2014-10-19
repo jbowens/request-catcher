@@ -53,9 +53,11 @@ window.catcher.insertRequest = function(req) {
   $(tr).data('r', req);
 
   var mainTd = document.createElement('td');
+  $(mainTd).addClass('general-info');
   var methodAndPath = makeDiv(req.method + ' ' + req.path, 'method-and-path');
   var dateTime = makeDateTime(time);
-  $(mainTd).append(methodAndPath, dateTime);
+  var remoteAddr = makeDiv(req.remote_addr, 'remote-addr');
+  $(mainTd).append(methodAndPath, dateTime, remoteAddr);
   tr.appendChild(mainTd);
 
   td(tr, req.body, 'body');
