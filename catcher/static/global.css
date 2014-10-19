@@ -14,13 +14,13 @@ a:hover {
 }
 
 #content {
-  width: 1000px;
-  margin: 30px auto;
+  width: 980px;
+  margin: 10px auto;
+  padding: 10px;
 }
 
 h1 {
   color: #222;
-  margin: 0.5em;
 }
 
 div#no-requests {
@@ -105,7 +105,7 @@ table#caught-requests td.body {
 #use-a-catcher {
   text-align: center;
   font-size: 30pt;
-  margin: 100px 0;
+  margin: 80px 0;
 }
 
 #use-a-catcher #url {
@@ -130,11 +130,16 @@ table#caught-requests td.body {
   font-size: 20pt;
   padding: 10px 15px;
   vertical-align: 30%;
+  font-weight: 300;
 }
 
 #new-catcher input#go:hover {
   background: #599C02;
   cursor: pointer;
+}
+
+#new-catcher #go-row {
+  margin: 40px 0;
 }
 
 h4 {
@@ -154,4 +159,5 @@ h2 {
 
 #explanation {
   margin: 50px 0 20px 0;
+  color: #333;
 }
