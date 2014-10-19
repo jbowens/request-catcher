@@ -15,7 +15,7 @@ a:hover {
 
 #content {
         width: 1000px;
-        margin: 50px auto;
+        margin: 30px auto;
 }
 
 h1 {
@@ -97,7 +97,55 @@ table#caught-requests td.body {
   overflow: auto;
 }
 
-.frown {
-  font-size: 7em;
+#use-a-catcher {
   text-align: center;
+  font-size: 30pt;
+  margin: 100px 0;
+}
+
+#use-a-catcher #url {
+  font-weight: lighter;
+}
+
+#use-a-catcher input#subdomain {
+  font-size: 30pt;
+  border: none;
+  border-bottom: 2px #AAA solid;
+  width: 5em;
+  text-align: center;
+}
+
+#new-catcher input#go {
+  margin: 25px auto;
+  color: #FFF;
+  background: #4A7510;
+  border: none;
+  border-radius: 15px;
+  font-size: 20pt;
+  padding: 10px 15px;
+  vertical-align: 30%;
+}
+
+#new-catcher input#go:hover {
+  background: #599C02;
+  cursor: pointer;
+}
+
+h4 {
+  font-size: 20pt;
+}
+
+h2 {
+  text-align: center;
+  font-weight: lighter;
+}
+
+#description {
+  text-align: center;
+  margin: 0 auto;
+  width: 700px;
+}
+
+#explanation {
+  margin: 50px 0 20px 0;
 }

@@ -36,6 +36,7 @@ func NewCatcher(host string, port int) *Catcher {
 }
 
 func (c *Catcher) init() {
+	c.router.HandleFunc("/", c.rootHandler).Host(c.host)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
@@ -58,6 +59,10 @@ func (c *Catcher) getHost(hostString string) *Host {
 	host := newHost(hostString)
 	c.hosts[hostString] = host
 	return host
+}
+
+func (c *Catcher) rootHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "catcher/templates/root.html")
 }
 
 func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
