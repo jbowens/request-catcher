@@ -2,7 +2,7 @@ package catcher
 
 import "github.com/gorilla/websocket"
 
-// Host represetns a host on which we've received requests.
+// Host represents a host on which we've received requests.
 type Host struct {
 	Host      string
 	clients   map[*websocket.Conn]*client
