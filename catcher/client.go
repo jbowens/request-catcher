@@ -32,7 +32,7 @@ func newClient(catcher *Catcher, host *Host, conn *websocket.Conn) *client {
 	return c
 }
 
-func (c *client) Ping() error {
+func (c *client) ping() error {
 	c.catcher.logger.Info("Pinging a client")
 	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.PingMessage, []byte{})
@@ -43,7 +43,8 @@ func (c *client) Close() error {
 	return c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 }
 
-func (c *client) SendJSON(obj interface{}) error {
+func (c *client) sendJSON(obj interface{}) error {
+	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteJSON(obj)
 }
 
@@ -58,7 +59,7 @@ func (c *client) writeLoop() {
 	for {
 		select {
 		case <-c.pingTicker.C:
-			if err := c.Ping(); err != nil {
+			if err := c.ping(); err != nil {
 				c.catcher.logger.Error("Error pinging: %v", err)
 				return
 			}
@@ -68,7 +69,7 @@ func (c *client) writeLoop() {
 				return
 			}
 
-			if err := c.SendJSON(msg); err != nil {
+			if err := c.sendJSON(msg); err != nil {
 				c.catcher.logger.Error("Error sending message: %v", err)
 				return
 			}
