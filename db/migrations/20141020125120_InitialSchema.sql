@@ -2,8 +2,6 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 
--- TODO(jackson): Add headers, as blob, or in a separate table? idk.
-
 CREATE TABLE `requests` (
   `id`              BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `host`            VARCHAR(100) NOT NULL,
