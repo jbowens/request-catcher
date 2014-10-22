@@ -11,8 +11,10 @@ Request Catcher does not currently persist requests. You will only receive reque
 
 To run Request Catcher locally, ensure that you've installed Go and all the project dependencies. You'll need to create the MySQL database and apply migrations:
 
+```
 mysql -e "CREATE DATABASE requestcatcher_development;"
 goose up
+```
 
 When starting the server, the command line interface takes three arguments: the hostname to listen on, the port number to listen on and the hostname to consider as the 'root'. The root hostname will serve the front page with information about the application. Only subdomains of the root hostname or other hosts routed to the application will catch requests. When running locally, you can use the `lvh.me` domain to test subdomains. For example, launch as
 
