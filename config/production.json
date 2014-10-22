@@ -1,0 +1,11 @@
+{
+  "port": 8000,
+  "host": "104.131.146.52",
+
+  "root_host": "requestcatcher.com",
+
+  "database": {
+    "name": "requestcatcher_production",
+    "host": "localhost"
+  }
+}
