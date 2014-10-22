@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/codegangsta/cli"
 	"github.com/jbowens/request-catcher/catcher"
@@ -24,11 +23,19 @@ func main() {
 			Usage:     "Start the Request Catcher web server",
 			Action: func(c *cli.Context) {
 				args := c.Args()
-				bindHost := args[0]
-				port, _ := strconv.Atoi(args[1])
-				rootHost := args[2]
-				fmt.Println(bindHost)
-				requestCatcher := catcher.NewCatcher(bindHost, port, rootHost)
+				if len(args) < 1 {
+					fmt.Println("Must provide config filename")
+					os.Exit(1)
+				}
+				configFilename := args.First()
+
+				config, err := catcher.LoadConfiguration(configFilename)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Error loading configuration: %v\n", err)
+					os.Exit(1)
+				}
+
+				requestCatcher := catcher.NewCatcher(config)
 				requestCatcher.Start()
 			},
 		},

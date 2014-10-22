@@ -1,0 +1,11 @@
+{
+  "port": 8000,
+  "host": "localhost",
+
+  "root_host": "lvh.me",
+
+  "database": {
+    "name": "requestcatcher_development",
+    "host": "localhost"
+  }
+}

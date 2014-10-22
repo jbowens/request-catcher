@@ -11,21 +11,17 @@ import (
 )
 
 type Catcher struct {
-	rootHost string
-	host     string
-	port     int
+	config   *Configuration
 	router   *mux.Router
 	upgrader websocket.Upgrader
 	hosts    map[string]*Host
 	logger   *logging.Logger
 }
 
-func NewCatcher(host string, port int, rootHost string) *Catcher {
+func NewCatcher(config *Configuration) *Catcher {
 	catcher := &Catcher{
-		rootHost: rootHost,
-		host:     host,
-		port:     port,
-		router:   mux.NewRouter(),
+		config: config,
+		router: mux.NewRouter(),
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
@@ -38,7 +34,7 @@ func NewCatcher(host string, port int, rootHost string) *Catcher {
 }
 
 func (c *Catcher) init() {
-	c.router.HandleFunc("/", c.rootHandler).Host(c.rootHost)
+	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
@@ -47,8 +43,8 @@ func (c *Catcher) init() {
 
 func (c *Catcher) Start() {
 	http.Handle("/", c.router)
-	fullHost := c.host + ":" + strconv.Itoa(c.port)
-	c.logger.Info("Listening on %v on port %v", c.host, c.port)
+	fullHost := c.config.Host + ":" + strconv.Itoa(c.config.Port)
+	c.logger.Info("Listening on %v on port %v", c.config.Host, c.config.Port)
 	http.ListenAndServe(fullHost, nil)
 }
 
