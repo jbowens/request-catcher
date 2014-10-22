@@ -62,6 +62,7 @@ table#caught-requests td {
   padding: 15px 5px;
   overflow: auto;
   border-bottom: 1px #EEE solid;
+  max-width: 550px;
 }
 
 table#caught-requests td .method-and-path {
