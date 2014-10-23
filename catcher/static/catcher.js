@@ -57,19 +57,28 @@ window.catcher.insertRequest = function(req) {
   var methodAndPath = makeDiv(req.method + ' ' + req.path, 'method-and-path');
   var dateTime = makeDateTime(time);
   var remoteAddr = makeDiv(req.remote_addr, 'remote-addr');
-  $(mainTd).append(methodAndPath, dateTime, remoteAddr);
-  tr.appendChild(mainTd);
 
-  td(tr, req.body, 'body');
-
-  var optionsTd = document.createElement('td');
-  $(optionsTd).addClass('options');
   var a = document.createElement('a');
   $(a).addClass('show-raw');
   $(a).text('raw');
   $(a).attr('href', '#');
-  $(optionsTd).append(a);
-  $(tr).append(optionsTd);
+  var optionsDiv = document.createElement('div');
+  $(optionsDiv).append(a);
+  $(optionsDiv).addClass('options');
+
+  $(mainTd).append(methodAndPath, dateTime, remoteAddr, optionsDiv);
+  tr.appendChild(mainTd);
+
+  var bodyTd = document.createElement('td');
+  $(bodyTd).addClass('body');
+  var code = document.createElement('code');
+  $(code).text(req.body);
+  bodyTd.appendChild(code);
+  tr.appendChild(bodyTd);
+
+  $(tr).find('.body code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  });
 
   window.catcher.addListeners(tr);
   window.catcher.heading.after(tr);
@@ -95,6 +104,9 @@ window.catcher.showRaw = function(evt) {
   evt.preventDefault();
   var req = $(evt.currentTarget).closest('tr').data('r');
   window.catcher.rawContent.text(req.raw_request);
+  window.catcher.rawContent.each(function(i, block) {
+    hljs.highlightBlock(block);
+  });
   window.catcher.rawPopup.show();
 };
 

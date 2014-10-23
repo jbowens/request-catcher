@@ -49,6 +49,10 @@ table#caught-requests {
   display: none;
 }
 
+table#caught-requests tr.heading {
+  display: none;
+}
+
 table#caught-requests th {
   text-align: left;
 }
@@ -59,10 +63,18 @@ table#caught-requests td {
 }
 
 table#caught-requests td {
-  padding: 15px 5px;
+  padding: 10px;
+}
+
+table#caught-requests td.general-info {
+  border:bottom: 1px #EEE solid;
+}
+
+table#caught-requests td.body {
+  width: 60%;
+  border-bottom: 1px #545454 solid;
   overflow: auto;
-  border-bottom: 1px #EEE solid;
-  max-width: 550px;
+  background: #3f3f3f;
 }
 
 table#caught-requests td .method-and-path {
@@ -80,6 +92,11 @@ table#caught-requests .body {
   white-space: pre;
 }
 
+.hljs {
+  border-radius: 0.5em;
+  padding: 0.5em;
+}
+
 #raw-popup {
   display: none;
   position: absolute;
@@ -89,7 +106,9 @@ table#caught-requests .body {
   height: 500px;
   margin-left: -400px;
   margin-top: -250px;
-  background: #FEFEFE;
+  background: #3f3f3f;
+  color: #FFF;
+  border-radius: 1em;
   border: 1px #D5D5D5 solid;
 }
 
@@ -169,4 +188,10 @@ h2 {
 #explanation {
   margin: 50px 0 20px 0;
   color: #333;
+}
+
+div.options a {
+  font-size: 0.8em;
+  margin: 1em 0;
+  color: #7DA5AD;
 }
