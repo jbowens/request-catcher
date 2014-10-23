@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', sans-serif;
+  background: #F7F7F7;
 }
 
 a {
@@ -63,21 +64,23 @@ table#caught-requests td {
 }
 
 table#caught-requests td {
-  padding: 10px;
+  padding: 80px;
+  background: #3f3f3f;
+  color: #dcdcdc;
+  border-bottom: 1px #545454 solid;
 }
 
 table#caught-requests td.general-info {
-  border:bottom: 1px #EEE solid;
 }
 
 table#caught-requests td.body {
-  width: 60%;
-  border-bottom: 1px #545454 solid;
+  width: 65%;
   overflow: auto;
   background: #3f3f3f;
 }
 
 table#caught-requests td .method-and-path {
+  color: #FFF;
   font-size: 1.4em;
 }
 
@@ -147,6 +150,7 @@ table#caught-requests .body {
   width: 5em;
   text-align: center;
   font-weight: lighter;
+  background: #F7F7F7;
 }
 
 #new-catcher input#go {
