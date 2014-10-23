@@ -60,7 +60,7 @@ window.catcher.insertRequest = function(req) {
 
   var a = document.createElement('a');
   $(a).addClass('show-raw');
-  $(a).text('raw');
+  $(a).text('raw http request');
   $(a).attr('href', '#');
   var optionsDiv = document.createElement('div');
   $(optionsDiv).append(a);
