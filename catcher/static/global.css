@@ -58,22 +58,22 @@ table#caught-requests th {
   text-align: left;
 }
 
-table#caught-requests th,
-table#caught-requests td {
+table#caught-requests th {
   padding: 0.25em;
 }
 
 table#caught-requests td {
-  padding: 80px;
   background: #3f3f3f;
   color: #dcdcdc;
   border-bottom: 1px #545454 solid;
 }
 
 table#caught-requests td.general-info {
+  padding: 35px 10px 10px 35px;
 }
 
 table#caught-requests td.body {
+  padding: 80px;
   width: 65%;
   overflow: auto;
   background: #3f3f3f;
