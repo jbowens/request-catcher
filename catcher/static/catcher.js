@@ -76,9 +76,11 @@ window.catcher.insertRequest = function(req) {
   bodyTd.appendChild(code);
   tr.appendChild(bodyTd);
 
-  $(tr).find('.body code').each(function(i, block) {
-    hljs.highlightBlock(block);
-  });
+  if (req.headers['Content-Type'] === "application/json") {
+    $(tr).find('.body code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  }
 
   window.catcher.addListeners(tr);
   window.catcher.heading.after(tr);
