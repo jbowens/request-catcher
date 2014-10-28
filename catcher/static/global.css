@@ -112,6 +112,7 @@ table#caught-requests .body {
   background: #3f3f3f;
   color: #FFF;
   border-radius: 1em;
+  border: 5px #5A6C6E solid;
 }
 
 #raw-popup .close-popup {
