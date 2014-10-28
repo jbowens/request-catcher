@@ -76,7 +76,8 @@ window.catcher.insertRequest = function(req) {
   bodyTd.appendChild(code);
   tr.appendChild(bodyTd);
 
-  if (req.headers['Content-Type'] === "application/json") {
+  if (req.headers['Content-Type'] &&
+      req.headers['Content-Type'][0] === "application/json") {
     $(tr).find('.body code').each(function(i, block) {
       hljs.highlightBlock(block);
     });
