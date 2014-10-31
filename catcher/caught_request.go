@@ -17,16 +17,17 @@ var bodyFormatters = map[string]func([]byte) ([]byte, error){
 // CaughtRequest represents all the data we collect about a request that
 // catch.
 type CaughtRequest struct {
-	Time          time.Time   `json:"time"`
-	Host          string      `json:"host"`
-	Method        string      `json:"method"`
-	Path          string      `json:"path"`
-	Headers       http.Header `json:"headers"`
-	ContentLength int64       `json:"content_length"`
-	RemoteAddr    string      `json:"remote_addr"`
-	Form          url.Values  `json:"form_values"`
-	Body          string      `json:"body"`
-	RawRequest    string      `json:"raw_request"`
+	ID            int64       `json:"-" db:"id"`
+	Time          time.Time   `json:"time" db:"when"`
+	Host          string      `json:"host" db:"host"`
+	Method        string      `json:"method" db:"method"`
+	Path          string      `json:"path" db:"path"`
+	Headers       http.Header `json:"headers" db:"-"`
+	ContentLength int64       `json:"content_length" db:"content_length"`
+	RemoteAddr    string      `json:"remote_addr" db:"remote_addr"`
+	Form          url.Values  `json:"form_values" db:"-"`
+	Body          string      `json:"body" db:"body"`
+	RawRequest    string      `json:"raw_request" db:"raw_request"`
 }
 
 func convertRequest(req *http.Request) *CaughtRequest {

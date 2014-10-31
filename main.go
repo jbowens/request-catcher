@@ -36,7 +36,11 @@ func main() {
 				}
 
 				requestCatcher := catcher.NewCatcher(config)
-				requestCatcher.Start()
+				err = requestCatcher.Start()
+				if err != nil {
+					fmt.Println(err.Error())
+					os.Exit(1)
+				}
 			},
 		},
 	}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/coopernurse/gorp"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/op/go-logging"
@@ -12,6 +13,7 @@ import (
 
 type Catcher struct {
 	config   *Configuration
+	db       *gorp.DbMap
 	router   *mux.Router
 	upgrader websocket.Upgrader
 	hosts    map[string]*Host
@@ -41,11 +43,18 @@ func (c *Catcher) init() {
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
 }
 
-func (c *Catcher) Start() {
+func (c *Catcher) Start() error {
+	var err error
+	c.db, err = initDb(c.config)
+	if err != nil {
+		return err
+	}
+
 	http.Handle("/", c.router)
 	fullHost := c.config.Host + ":" + strconv.Itoa(c.config.Port)
 	c.logger.Info("Listening on %v on port %v", c.config.Host, c.config.Port)
 	http.ListenAndServe(fullHost, nil)
+	return nil
 }
 
 func (c *Catcher) getHost(hostString string) *Host {
@@ -75,6 +84,11 @@ func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	caughtRequest := convertRequest(r)
+
+	// Save the request to the database
+	c.persistRequest(caughtRequest)
+
+	// Broadcast it to everyone listening for requests on this host
 	host := c.getHost(caughtRequest.Host)
 	c.logger.Info("Routing caught request to %v", host)
 	host.broadcast <- caughtRequest
