@@ -12,7 +12,7 @@ import (
 func initDb(config *Configuration) (*gorp.DbMap, error) {
 	dsn := fmt.Sprintf("%s/%s/%s",
 		config.Database.Name,
-		"",
+		config.Database.User,
 		"")
 
 	db, err := sql.Open("mymysql", dsn)
