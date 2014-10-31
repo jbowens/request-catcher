@@ -16,6 +16,7 @@ type Database struct {
 	Port int
 	Name string
 	Host string
+	User string
 }
 
 func LoadConfiguration(filename string) (*Configuration, error) {

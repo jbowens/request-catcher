@@ -6,6 +6,7 @@
 
   "database": {
     "name": "requestcatcher_production",
+    "user": "requestcatcher",
     "host": "localhost"
   }
 }
