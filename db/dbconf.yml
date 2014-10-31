@@ -1,3 +1,6 @@
 development:
   driver: mymysql
   open: requestcatcher_development//
+production:
+  driver: mymysql
+  open: requestcatcher_production//
