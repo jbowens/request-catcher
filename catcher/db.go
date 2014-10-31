@@ -13,7 +13,7 @@ func initDb(config *Configuration) (*gorp.DbMap, error) {
 	dsn := fmt.Sprintf("%s/%s/%s",
 		config.Database.Name,
 		"",
-		config.Database.Host)
+		"")
 
 	db, err := sql.Open("mymysql", dsn)
 	if err != nil {
@@ -22,7 +22,7 @@ func initDb(config *Configuration) (*gorp.DbMap, error) {
 
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbmap.AddTableWithName(CaughtRequest{}, "requests").SetKeys(true, "ID")
-	dbmap.AddTableWithName(Header{}, "headers").SetKeys(true, "ID")
+	dbmap.AddTableWithName(Header{}, "request_headers").SetKeys(true, "ID")
 
 	return dbmap, err
 }
