@@ -16,9 +16,9 @@ mysql -e "CREATE DATABASE requestcatcher_development;"
 goose up
 ```
 
-When starting the server, the command line interface takes three arguments: the hostname to listen on, the port number to listen on and the hostname to consider as the 'root'. The root hostname will serve the front page with information about the application. Only subdomains of the root hostname or other hosts routed to the application will catch requests. When running locally, you can use the `lvh.me` domain to test subdomains. For example, launch as
+When starting the server, the command line interface takes one argument, the path to a json configuration file. See `config/development.json` to see the possible configuration parameters.
 
-`go run main.go start localhost 8080 lvh.me`
+`go run main.go start "config/development.json"`
 
 Then visit `http://lvh.me:8080` in your browser.
 
