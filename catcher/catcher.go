@@ -95,6 +95,9 @@ func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 	host := c.getHost(caughtRequest.Host)
 	c.logger.Info("Routing caught request to %v", host)
 	host.broadcast <- caughtRequest
+
+	// Respond to the request
+	fmt.Fprintf(w, "request caught")
 }
 
 func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
