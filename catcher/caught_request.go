@@ -15,7 +15,7 @@ var bodyFormatters = map[string]func([]byte) ([]byte, error){
 }
 
 // CaughtRequest represents all the data we collect about a request that
-// catch.
+// we catch.
 type CaughtRequest struct {
 	ID            int64       `json:"-" db:"id"`
 	Time          time.Time   `json:"time" db:"when"`
