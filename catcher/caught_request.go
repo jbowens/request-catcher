@@ -31,7 +31,6 @@ type CaughtRequest struct {
 }
 
 func convertRequest(req *http.Request) *CaughtRequest {
-
 	raw_request, _ := httputil.DumpRequest(req, true)
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
