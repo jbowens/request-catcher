@@ -11,7 +11,6 @@ import (
 const defaultPort = 80
 
 func main() {
-
 	cliApp := cli.NewApp()
 	cliApp.Name = "Request Catcher"
 	cliApp.Usage = "The Request Catcher web server"
