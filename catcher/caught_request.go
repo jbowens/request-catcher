@@ -67,13 +67,10 @@ func convertRequest(req *http.Request) *CaughtRequest {
 
 func jsonPrettyPrinter(body []byte) ([]byte, error) {
 	var value interface{}
-	var err error
 
-	err = json.Unmarshal(body, &value)
-	if err != nil {
+	if err := json.Unmarshal(body, &value); err != nil {
 		return []byte{}, err
 	}
 
-	pretty, err := json.MarshalIndent(value, "", "  ")
-	return pretty, err
+	return json.MarshalIndent(value, "", "  ")
 }

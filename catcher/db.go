@@ -27,9 +27,8 @@ func initDb(config *Configuration) (*gorp.DbMap, error) {
 	return dbmap, err
 }
 
-func (c *Catcher) persistRequest(request *CaughtRequest) error {
-	err := c.db.Insert(request)
-	if err != nil {
+func (c *Catcher) persistRequest(request *CaughtRequest) (err error) {
+	if err := c.db.Insert(request); err != nil {
 		return err
 	}
 

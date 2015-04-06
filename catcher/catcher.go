@@ -86,8 +86,7 @@ func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 	caughtRequest := convertRequest(r)
 
 	// Save the request to the database
-	err := c.persistRequest(caughtRequest)
-	if err != nil {
+	if err := c.persistRequest(caughtRequest); err != nil {
 		c.logger.Error("Error persisting request to database: %v", err)
 	}
 
