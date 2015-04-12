@@ -74,6 +74,11 @@ func (c *Catcher) rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
+	// Some people mistakenly expect requests to the index of the subdomain
+	// to be caught. For now, just catch those as well. Later I should move
+	// the index to be hosted at requestcatcher.com.
+	c.catch(r)
+
 	http.ServeFile(w, r, "catcher/templates/index.html")
 }
 
@@ -83,17 +88,8 @@ func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "not found")
 		return
 	}
-	caughtRequest := convertRequest(r)
 
-	// Save the request to the database
-	if err := c.persistRequest(caughtRequest); err != nil {
-		c.logger.Error("Error persisting request to database: %v", err)
-	}
-
-	// Broadcast it to everyone listening for requests on this host
-	host := c.getHost(caughtRequest.Host)
-	c.logger.Info("Routing caught request to %v", host)
-	host.broadcast <- caughtRequest
+	c.catch(r)
 
 	// Respond to the request
 	fmt.Fprintf(w, "request caught")
@@ -114,4 +110,18 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 	clientHost := c.getHost(r.Host)
 	c.logger.Info("Initializing a new client on host %v", clientHost.Host)
 	clientHost.addClient(newClient(c, clientHost, ws))
+}
+
+func (c *Catcher) catch(r *http.Request) {
+	caughtRequest := convertRequest(r)
+
+	// Save the request to the database
+	if err := c.persistRequest(caughtRequest); err != nil {
+		c.logger.Error("Error persisting request to database: %v", err)
+	}
+
+	// Broadcast it to everyone listening for requests on this host
+	host := c.getHost(caughtRequest.Host)
+	c.logger.Info("Routing caught request to %v", host)
+	host.broadcast <- caughtRequest
 }
