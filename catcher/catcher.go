@@ -116,9 +116,11 @@ func (c *Catcher) catch(r *http.Request) {
 	caughtRequest := convertRequest(r)
 
 	// Save the request to the database
-	if err := c.persistRequest(caughtRequest); err != nil {
-		c.logger.Error("Error persisting request to database: %v", err)
-	}
+	go func() {
+		if err := c.persistRequest(caughtRequest); err != nil {
+			c.logger.Error("Error persisting request to database: %v", err)
+		}
+	}()
 
 	// Broadcast it to everyone listening for requests on this host
 	host := c.getHost(caughtRequest.Host)
