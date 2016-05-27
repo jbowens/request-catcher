@@ -146,11 +146,11 @@ table#caught-requests .body {
 #use-a-catcher input#subdomain {
   font-size: 30pt;
   border: none;
-  border-bottom: 2px #AAA solid;
   width: 5em;
   text-align: center;
   font-weight: lighter;
-  background: #F7F7F7;
+  background: #FFF;
+  border: 1px #555 solid;
 }
 
 #new-catcher input#go {
