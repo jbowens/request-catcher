@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/codegangsta/cli"
 	"github.com/jbowens/request-catcher/catcher"
@@ -34,10 +36,11 @@ func main() {
 					os.Exit(1)
 				}
 
-				requestCatcher := catcher.NewCatcher(config)
-				err = requestCatcher.Start()
+				fullHost := config.Host + ":" + strconv.Itoa(config.Port)
+				handler := catcher.NewCatcher(config)
+				err = http.ListenAndServe(fullHost, handler)
 				if err != nil {
-					fmt.Println(err.Error())
+					fmt.Fprintf(os.Stderr, "Error listening on %s: %s\n", fullHost, err)
 					os.Exit(1)
 				}
 			},

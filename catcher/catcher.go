@@ -3,7 +3,6 @@ package catcher
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/coopernurse/gorp"
 	"github.com/gorilla/mux"
@@ -35,26 +34,21 @@ func NewCatcher(config *Configuration) *Catcher {
 	return catcher
 }
 
-func (c *Catcher) init() {
+func (c *Catcher) init() (err error) {
+	c.db, err = initDb(c.config)
+	if err != nil {
+		return err
+	}
 	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
+	return nil
 }
 
-func (c *Catcher) Start() error {
-	var err error
-	c.db, err = initDb(c.config)
-	if err != nil {
-		return err
-	}
-
-	http.Handle("/", c.router)
-	fullHost := c.config.Host + ":" + strconv.Itoa(c.config.Port)
-	c.logger.Info("Listening on %v on port %v", c.config.Host, c.config.Port)
-	http.ListenAndServe(fullHost, nil)
-	return nil
+func (c *Catcher) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	c.router.ServeHTTP(rw, req)
 }
 
 func (c *Catcher) getHost(hostString string) *Host {
