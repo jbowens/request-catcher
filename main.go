@@ -16,8 +16,6 @@ import (
 	"github.com/jbowens/request-catcher/catcher"
 )
 
-const defaultPort = 80
-
 func main() {
 	cliApp := cli.NewApp()
 	cliApp.Name = "Request Catcher"
