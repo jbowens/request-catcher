@@ -8,5 +8,10 @@
     "name": "requestcatcher_production",
     "user": "requestcatcher",
     "host": "localhost"
+  },
+
+  "lets_encrypt": {
+      "email": "jackson_owens@alumni.brown.edu",
+      "certs_directory": "/home/requestcatcher/go/src/github.com/jbowens/request-catcher/certs"
   }
 }
