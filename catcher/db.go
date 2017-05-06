@@ -40,7 +40,9 @@ func (c *Catcher) persistRequest(request *CaughtRequest) (err error) {
 			Value:     val,
 		}
 		err = c.db.Insert(header)
+		if err != nil {
+			return err
+		}
 	}
-
 	return err
 }
