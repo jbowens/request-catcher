@@ -38,7 +38,12 @@ func main() {
 
 				fullHost := config.Host + ":" + strconv.Itoa(config.Port)
 				handler := catcher.NewCatcher(config)
-				err = http.ListenAndServe(fullHost, handler)
+				server := http.Server{
+					Addr:    fullHost,
+					Handler: handler,
+				}
+
+				err = server.ListenAndServe()
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Error listening on %s: %s\n", fullHost, err)
 					os.Exit(1)
