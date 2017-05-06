@@ -1,10 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/jbowens/request-catcher/catcher"
@@ -39,8 +41,12 @@ func main() {
 				fullHost := config.Host + ":" + strconv.Itoa(config.Port)
 				handler := catcher.NewCatcher(config)
 				server := http.Server{
-					Addr:    fullHost,
-					Handler: handler,
+					ReadTimeout:  5 * time.Second,
+					WriteTimeout: 10 * time.Second,
+					IdleTimeout:  120 * time.Second,
+					TLSNextProto: map[string]func(*http.Server, *tls.Conn, http.Handler){},
+					Addr:         fullHost,
+					Handler:      handler,
 				}
 
 				err = server.ListenAndServe()
