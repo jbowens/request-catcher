@@ -2,25 +2,14 @@ package catcher
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
 type Configuration struct {
-	Port        int
-	Host        string
-	RootHost    string `json:"root_host"`
-	Database    *Database
-	LetsEncrypt *LetsEncrypt `json:"lets_encrypt"`
-}
-
-func (c *Configuration) ListenAddress() string {
-	return fmt.Sprintf("%s:%d", c.Host, c.Port)
-}
-
-type LetsEncrypt struct {
-	Email          string `json:"email"`
-	CertsDirectory string `json:"certs_directory"`
+	Port     int
+	Host     string
+	RootHost string `json:"root_host"`
+	Database *Database
 }
 
 type Database struct {
