@@ -18,7 +18,7 @@ goose up
 
 When starting the server, the command line interface takes one argument, the path to a json configuration file. See `config/development.json` to see the possible configuration parameters.
 
-`go run main.go start "config/development.json"`
+`go run main.go "config/development.json"`
 
 Then visit `http://lvh.me:8080` in your browser.
 
