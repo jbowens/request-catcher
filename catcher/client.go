@@ -33,7 +33,6 @@ func newClient(catcher *Catcher, host *Host, conn *websocket.Conn) *client {
 }
 
 func (c *client) ping() error {
-	c.catcher.logger.Info("Pinging a client")
 	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.conn.WriteMessage(websocket.PingMessage, []byte{})
 }
@@ -50,7 +49,6 @@ func (c *client) sendJSON(obj interface{}) error {
 
 func (c *client) writeLoop() {
 	defer func() {
-		c.catcher.logger.Info("Client exiting")
 		c.pingTicker.Stop()
 		c.conn.Close()
 		delete(c.host.clients, c.conn)
@@ -83,7 +81,6 @@ func (c *client) readLoop() {
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Time{})
 	c.conn.SetPongHandler(func(msg string) error {
-		c.catcher.logger.Debug("Pong from a client")
 		return nil
 	})
 	for {
