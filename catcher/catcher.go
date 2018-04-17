@@ -63,7 +63,6 @@ func (c *Catcher) getHost(hostString string) *Host {
 }
 
 func (c *Catcher) rootHandler(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("request to root page")
 	http.ServeFile(w, r, "catcher/templates/root.html")
 }
 
@@ -118,6 +117,5 @@ func (c *Catcher) catch(r *http.Request) {
 
 	// Broadcast it to everyone listening for requests on this host
 	host := c.getHost(caughtRequest.Host)
-	c.logger.Info("Routing caught request to %v", host)
 	host.broadcast <- caughtRequest
 }
