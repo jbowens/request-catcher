@@ -3,6 +3,7 @@ package catcher
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/coopernurse/gorp"
 	"github.com/gorilla/mux"
@@ -44,6 +45,15 @@ func (c *Catcher) init() (err error) {
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
+
+	go func() {
+		for range time.Tick(time.Hour) {
+			err := c.deleteOldRequests()
+			if err != nil {
+				c.logger.Error(err.Error())
+			}
+		}
+	}()
 	return nil
 }
 
