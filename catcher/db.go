@@ -52,7 +52,7 @@ func (c *Catcher) deleteOldRequests() error {
 		DELETE requests, request_headers
 		FROM requests
 		LEFT JOIN request_headers ON requests.id = request_headers.request_id
-		WHERE requests.when < NOW() - INTERVAL 1 WEEK;
+		WHERE requests.when < NOW() - INTERVAL 1 DAY;
 	`
 	_, err := c.db.Db.Exec(q)
 	return err
