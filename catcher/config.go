@@ -9,14 +9,6 @@ type Configuration struct {
 	Port     int
 	Host     string
 	RootHost string `json:"root_host"`
-	Database *Database
-}
-
-type Database struct {
-	Port int
-	Name string
-	Host string
-	User string
 }
 
 func LoadConfiguration(filename string) (*Configuration, error) {

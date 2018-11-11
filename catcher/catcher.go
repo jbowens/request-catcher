@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-	"time"
 
-	"github.com/coopernurse/gorp"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/op/go-logging"
@@ -14,7 +12,6 @@ import (
 
 type Catcher struct {
 	config   *Configuration
-	db       *gorp.DbMap
 	router   *mux.Router
 	upgrader websocket.Upgrader
 	logger   *logging.Logger
@@ -24,7 +21,7 @@ type Catcher struct {
 }
 
 func NewCatcher(config *Configuration) *Catcher {
-	catcher := &Catcher{
+	c := &Catcher{
 		config: config,
 		router: mux.NewRouter(),
 		upgrader: websocket.Upgrader{
@@ -35,30 +32,12 @@ func NewCatcher(config *Configuration) *Catcher {
 
 		hosts: make(map[string]*Host),
 	}
-	catcher.init()
-	return catcher
-}
-
-func (c *Catcher) init() (err error) {
-	c.db, err = initDb(c.config)
-	if err != nil {
-		return err
-	}
 	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
 	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
-
-	go func() {
-		for range time.Tick(time.Hour) {
-			err := c.deleteOldRequests()
-			if err != nil {
-				c.logger.Error(err.Error())
-			}
-		}
-	}()
-	return nil
+	return c
 }
 
 func (c *Catcher) ServeHTTP(rw http.ResponseWriter, req *http.Request) {

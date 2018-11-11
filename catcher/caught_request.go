@@ -17,17 +17,17 @@ var bodyFormatters = map[string]func([]byte) ([]byte, error){
 // CaughtRequest represents all the data we collect about a request that
 // we catch.
 type CaughtRequest struct {
-	ID            int64       `json:"-" db:"id"`
-	Time          time.Time   `json:"time" db:"when"`
-	Host          string      `json:"host" db:"host"`
-	Method        string      `json:"method" db:"method"`
-	Path          string      `json:"path" db:"path"`
-	Headers       http.Header `json:"headers" db:"-"`
-	ContentLength int64       `json:"content_length" db:"content_length"`
-	RemoteAddr    string      `json:"remote_addr" db:"remote_addr"`
-	Form          url.Values  `json:"form_values" db:"-"`
-	Body          string      `json:"body" db:"body"`
-	RawRequest    string      `json:"raw_request" db:"raw_request"`
+	ID            int64       `json:"-"`
+	Time          time.Time   `json:"time"`
+	Host          string      `json:"host"`
+	Method        string      `json:"method"`
+	Path          string      `json:"path"`
+	Headers       http.Header `json:"headers"`
+	ContentLength int64       `json:"content_length"`
+	RemoteAddr    string      `json:"remote_addr"`
+	Form          url.Values  `json:"form_values"`
+	Body          string      `json:"body"`
+	RawRequest    string      `json:"raw_request"`
 }
 
 func convertRequest(req *http.Request) *CaughtRequest {
@@ -43,14 +43,12 @@ func convertRequest(req *http.Request) *CaughtRequest {
 	prettyBody := string(body)
 	if formatter, ok := bodyFormatters[req.Header.Get("Content-Type")]; ok {
 		newBody, err := formatter(body)
-		if err != nil {
-			fmt.Printf("Error formatting body: %v", err)
-		} else {
+		if err == nil {
 			prettyBody = string(newBody)
 		}
 	}
 
-	r := &CaughtRequest{
+	return &CaughtRequest{
 		Time:          time.Now(),
 		Host:          host,
 		Method:        req.Method,
@@ -62,7 +60,6 @@ func convertRequest(req *http.Request) *CaughtRequest {
 		Body:          prettyBody,
 		RawRequest:    string(raw_request),
 	}
-	return r
 }
 
 func jsonPrettyPrinter(body []byte) ([]byte, error) {
