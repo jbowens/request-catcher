@@ -1,12 +1,5 @@
 {
   "port": 8000,
   "host": "127.0.0.1",
-
-  "root_host": "requestcatcher.com",
-
-  "database": {
-    "name": "requestcatcher_production",
-    "user": "requestcatcher",
-    "host": ""
-  }
+  "root_host": "requestcatcher.com"
 }
