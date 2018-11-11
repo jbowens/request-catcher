@@ -118,7 +118,7 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 
 	clientHost := c.host(r.Host)
 	c.logger.Info("Initializing a new client on host %v", clientHost.Host)
-	clientHost.addClient(newClient(c, clientHost, ws))
+	clientHost.clients.Store(c, newClient(c, clientHost, ws))
 }
 
 func (c *Catcher) catch(r *http.Request) {

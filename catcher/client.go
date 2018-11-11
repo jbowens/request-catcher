@@ -51,7 +51,7 @@ func (c *client) writeLoop() {
 	defer func() {
 		c.pingTicker.Stop()
 		c.conn.Close()
-		delete(c.host.clients, c.conn)
+		c.host.clients.Delete(c.conn)
 	}()
 
 	for {

@@ -1,18 +1,23 @@
 package catcher
 
-import "github.com/gorilla/websocket"
+import "sync"
 
 // Host represents a host on which we've received requests.
 type Host struct {
 	Host      string
-	clients   map[*websocket.Conn]*client
 	broadcast chan *CaughtRequest
+
+	// clients is a map from the pointer to the websocket
+	// connection to the pointer to the corresponding client
+	// struct. It's a sync.Map because sync.Map.Range doesn't
+	// need to keep a mutex locked during iteration, which
+	// is good for us if a client is being slow to respond.
+	clients sync.Map // map[*websocket.Conn]*client
 }
 
 func newHost(host string) *Host {
 	hostObj := &Host{
 		Host:      host,
-		clients:   make(map[*websocket.Conn]*client),
 		broadcast: make(chan *CaughtRequest),
 	}
 	go hostObj.broadcaster()
@@ -21,12 +26,10 @@ func newHost(host string) *Host {
 
 func (h *Host) broadcaster() {
 	for req := range h.broadcast {
-		for _, client := range h.clients {
-			client.output <- req
-		}
+		h.clients.Range(func(conn, untypedClient interface{}) bool {
+			typedClient := untypedClient.(*client)
+			typedClient.output <- req
+			return true
+		})
 	}
-}
-
-func (h *Host) addClient(c *client) {
-	h.clients[c.conn] = c
 }
