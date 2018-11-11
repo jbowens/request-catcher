@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -70,4 +71,11 @@ func jsonPrettyPrinter(body []byte) ([]byte, error) {
 	}
 
 	return json.MarshalIndent(value, "", "  ")
+}
+
+func hostWithoutPort(host string) string {
+	if sepIndex := strings.IndexRune(host, ':'); sepIndex != -1 {
+		host = host[:sepIndex]
+	}
+	return host
 }
