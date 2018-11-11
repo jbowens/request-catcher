@@ -3,6 +3,7 @@ package catcher
 import (
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/coopernurse/gorp"
@@ -16,8 +17,10 @@ type Catcher struct {
 	db       *gorp.DbMap
 	router   *mux.Router
 	upgrader websocket.Upgrader
-	hosts    map[string]*Host
 	logger   *logging.Logger
+
+	hostsMu sync.Mutex
+	hosts   map[string]*Host
 }
 
 func NewCatcher(config *Configuration) *Catcher {
@@ -28,8 +31,9 @@ func NewCatcher(config *Configuration) *Catcher {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
-		hosts:  make(map[string]*Host),
 		logger: logging.MustGetLogger("request-catcher"),
+
+		hosts: make(map[string]*Host),
 	}
 	catcher.init()
 	return catcher
@@ -61,9 +65,11 @@ func (c *Catcher) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	c.router.ServeHTTP(rw, req)
 }
 
-func (c *Catcher) getHost(hostString string) *Host {
+func (c *Catcher) host(hostString string) *Host {
 	hostString = hostWithoutPort(hostString)
 
+	c.hostsMu.Lock()
+	defer c.hostsMu.Unlock()
 	if host, ok := c.hosts[hostString]; ok {
 		return host
 	}
@@ -110,7 +116,7 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientHost := c.getHost(r.Host)
+	clientHost := c.host(r.Host)
 	c.logger.Info("Initializing a new client on host %v", clientHost.Host)
 	clientHost.addClient(newClient(c, clientHost, ws))
 }
@@ -119,6 +125,6 @@ func (c *Catcher) catch(r *http.Request) {
 	caughtRequest := convertRequest(r)
 
 	// Broadcast it to everyone listening for requests on this host
-	host := c.getHost(caughtRequest.Host)
+	host := c.host(caughtRequest.Host)
 	host.broadcast <- caughtRequest
 }
