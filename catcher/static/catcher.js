@@ -32,13 +32,10 @@ window.catcher.insertRequest = function(req) {
   $(metadata).addClass('metadata');
   $(metadata).text("Received at " + window.catcher.formatDate(time));
 
-  $(mainDiv).append(pre, metadata);
+  $(mainDiv).append(metadata, pre);
 
   window.catcher.requests.prepend(mainDiv);
-  if (!window.catcher.requests.is(':visible')) {
-    window.catcher.noRequests.hide();
-    window.catcher.requests.show();
-  }
+  window.catcher.noRequests.hide();
 };
 
 window.catcher.formatDate = function(date) {
