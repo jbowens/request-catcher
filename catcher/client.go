@@ -72,10 +72,12 @@ func (c *client) writeLoop() {
 		case <-c.pingTicker.C:
 			if err := c.ping(); err != nil {
 				c.catcher.logger.Errorf("Error pinging: %v", err)
+				return
 			}
 		case msg := <-c.output:
 			if err := c.sendJSON(msg); err != nil {
 				c.catcher.logger.Errorf("Error sending message: %v", err)
+				return
 			}
 		case <-c.closed:
 			return
