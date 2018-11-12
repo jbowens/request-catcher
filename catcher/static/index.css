@@ -1,0 +1,42 @@
+body, pre {
+    font-family: "Source Code Pro", monospace;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+  color: #000;
+  font-family: "Open Sans";
+  padding: 0.25em;
+  font-size: 2em;
+}
+
+#requests {
+    margin: 1em;
+}
+
+.request {
+    border-bottom: 1px #e4e4e4 solid;
+}
+.request .metadata {
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
+}
+
+div#no-requests {
+  padding: 100px;
+  text-align: center;
+}
+div#no-requests .message {
+  font-size: 47pt;
+}
+div#no-requests .try-it {
+  margin-top: 100px;
+}
+div#no-requests .code {
+  background: #333;
+  color: #FFF;
+  border-radius: 0.25em;
+  padding: 0.5em;
+  font-family: monospace;
+}

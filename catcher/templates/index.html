@@ -1,48 +1,33 @@
 <html>
-<head>
+  <head>
     <title>request catcher</title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/global.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/zenburn.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono|Source+Code+Pro|Cousine|Open+Sans:400,300,600" rel="stylesheet" type='text/css'>
+    <link rel="stylesheet" href="/static/index.css" />
     <script type="text/javascript" src="/static/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="/static/moment.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
     <script type="text/javascript" src="/static/catcher.js?v=0.1"></script>
-</head>
-<body>
-        <div id="content">
-          <h1>Request Catcher</h1>
+  </head>
+  <body>
+    <h1>request catcher</h1>
 
-          <div id="no-requests">
-            <div class="message">No requests have been received yet. :(</div>
-            <div class="try-it">
-              <span class="code">
-                curl -X POST -d 'Hello World!' https://<span id="hostname">requestcatcher.com</span>/test
-              </span>
-            </div>
-          </div>
-
-          <table id="caught-requests" cellspacing="0">
-            <tr class="heading">
-              <th>Headers</th>
-              <th>Body</th>
-            </tr>
-
-          </table>
+    <div id="no-requests">
+      <div class="message">No requests have been received yet :(</div>
+      <div class="try-it">
+        <span class="code">
+          curl -X POST -d 'Hello World!' https://<span id="hostname">requestcatcher.com</span>/test
+        </span>
       </div>
+    </div>
+    <div id="requests"></div>
 
-      <div id="raw-popup">
-        <i class="fa fa-close close-popup"></i>
-        <pre id="raw-content" class="http"></pre>
-      </div>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-55875288-1', 'auto');
-  ga('send', 'pageview');
-</script>
-</body>
+      ga('create', 'UA-55875288-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
