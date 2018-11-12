@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     var subdomain = $('#subdomain').val();
     if (subdomain) {
-      var url = 'http://' + subdomain + '.' + window.location.host + '/';
+      var url = 'https://' + subdomain + '.' + window.location.host + '/';
       window.location = url;
     }
   });
