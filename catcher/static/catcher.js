@@ -56,7 +56,6 @@ window.catcher.insertRequest = function(req) {
   $(mainTd).addClass('general-info');
   var methodAndPath = makeDiv(req.method + ' ' + req.path, 'method-and-path');
   var dateTime = makeDateTime(time);
-  var remoteAddr = makeDiv(req.remote_addr, 'remote-addr');
 
   var a = document.createElement('a');
   $(a).addClass('show-raw');
@@ -66,7 +65,7 @@ window.catcher.insertRequest = function(req) {
   $(optionsDiv).append(a);
   $(optionsDiv).addClass('options');
 
-  $(mainTd).append(methodAndPath, dateTime, remoteAddr, optionsDiv);
+  $(mainTd).append(methodAndPath, dateTime, optionsDiv);
   tr.appendChild(mainTd);
 
   var bodyTd = document.createElement('td');

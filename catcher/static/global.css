@@ -87,9 +87,6 @@ table#caught-requests td .method-and-path {
 table#caught-requests div.timestamp {
   font-size: 0.8em;
 }
-table#caught-requests div.remote-addr {
-  font-size: 0.5em;
-}
 
 table#caught-requests .body {
   white-space: pre;
