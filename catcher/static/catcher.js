@@ -2,7 +2,7 @@ window.catcher = window.catcher || {};
 
 window.catcher.connect = function() {
     if (window.WebSocket) {
-        conn = new WebSocket("ws://" + window.location.host + "/init-client");
+        conn = new WebSocket("wss://" + window.location.host + "/init-client");
         conn.onclose = function(evt) {
             console.log("connection closed", evt);
             // Reconnet after a pause.
