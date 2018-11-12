@@ -2,7 +2,6 @@ package catcher
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -15,10 +14,7 @@ var bodyFormatters = map[string]func([]byte) ([]byte, error){
 	"application/json": jsonPrettyPrinter,
 }
 
-// CaughtRequest represents all the data we collect about a request that
-// we catch.
-type CaughtRequest struct {
-	ID            int64       `json:"-"`
+type RequestData struct {
 	Time          time.Time   `json:"time"`
 	Host          string      `json:"host"`
 	Method        string      `json:"method"`
@@ -31,26 +27,41 @@ type CaughtRequest struct {
 	RawRequest    string      `json:"raw_request"`
 }
 
+type CaughtRequest struct {
+	*http.Request
+	time time.Time
+	raw  []byte
+}
+
 func convertRequest(req *http.Request) *CaughtRequest {
-	raw_request, _ := httputil.DumpRequest(req, true)
+	// Dumping a request will replace req.Body with an in-memory
+	// cached version of the request body. So it's okay to read
+	// from req.Body even after the client connection is gone.
+	raw, _ := httputil.DumpRequest(req, true)
+	return &CaughtRequest{time: time.Now(), raw: raw, Request: req}
+}
+
+func (req *CaughtRequest) MarshalJSON() ([]byte, error) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		fmt.Printf("Error reading body: %v", err)
+		return nil, err
 	}
 
 	host := hostWithoutPort(req.Host)
 
 	// Pretty-print the body, if we can.
-	prettyBody := string(body)
+	var prettyBody string
 	if formatter, ok := bodyFormatters[req.Header.Get("Content-Type")]; ok {
-		newBody, err := formatter(body)
-		if err == nil {
+		if newBody, err := formatter(body); err == nil {
 			prettyBody = string(newBody)
 		}
 	}
+	if prettyBody == "" {
+		prettyBody = string(body)
+	}
 
-	return &CaughtRequest{
-		Time:          time.Now(),
+	return json.Marshal(&RequestData{
+		Time:          req.time,
 		Host:          host,
 		Method:        req.Method,
 		Path:          req.RequestURI,
@@ -59,8 +70,8 @@ func convertRequest(req *http.Request) *CaughtRequest {
 		RemoteAddr:    hostWithoutPort(req.RemoteAddr),
 		Form:          req.PostForm,
 		Body:          prettyBody,
-		RawRequest:    string(raw_request),
-	}
+		RawRequest:    string(req.raw),
+	})
 }
 
 func jsonPrettyPrinter(body []byte) ([]byte, error) {
