@@ -16,6 +16,7 @@ type client struct {
 	catcher    *Catcher
 	host       *Host
 	conn       *websocket.Conn
+	closed     chan struct{}
 	output     chan interface{}
 }
 
@@ -25,6 +26,7 @@ func newClient(catcher *Catcher, host *Host, conn *websocket.Conn) *client {
 		catcher:    catcher,
 		host:       host,
 		conn:       conn,
+		closed:     make(chan struct{}),
 		output:     make(chan interface{}, outputChannelBuffer),
 	}
 	go c.writeLoop()
@@ -38,8 +40,23 @@ func (c *client) ping() error {
 }
 
 func (c *client) Close() error {
+	select {
+	case <-c.closed:
+		// already closed
+		return nil
+	default:
+	}
+
+	c.host.clients.Delete(c.conn)
+	close(c.closed)
+	c.pingTicker.Stop()
+
+	// Be nice and issue a CloseMessage before closing the conn.
 	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-	return c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+	err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+
+	c.conn.Close()
+	return err
 }
 
 func (c *client) sendJSON(obj interface{}) error {
@@ -48,34 +65,27 @@ func (c *client) sendJSON(obj interface{}) error {
 }
 
 func (c *client) writeLoop() {
-	defer func() {
-		c.pingTicker.Stop()
-		c.conn.Close()
-		c.host.clients.Delete(c.conn)
-	}()
+	defer c.Close()
 
 	for {
 		select {
 		case <-c.pingTicker.C:
 			if err := c.ping(); err != nil {
 				c.catcher.logger.Errorf("Error pinging: %v", err)
-				return
 			}
-		case msg, ok := <-c.output:
-			if !ok {
-				c.Close()
-				return
-			}
-
+		case msg := <-c.output:
 			if err := c.sendJSON(msg); err != nil {
 				c.catcher.logger.Errorf("Error sending message: %v", err)
-				return
 			}
+		case <-c.closed:
+			return
 		}
 	}
 }
 
 func (c *client) readLoop() {
+	defer c.Close()
+
 	// We don't care about what the client sends to us, but we need to
 	// read it to keep the connection fresh.
 	c.conn.SetReadLimit(maxMessageSize)
@@ -85,7 +95,6 @@ func (c *client) readLoop() {
 	})
 	for {
 		if _, _, err := c.conn.NextReader(); err != nil {
-			c.conn.Close()
 			break
 		}
 	}
