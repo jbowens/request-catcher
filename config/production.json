@@ -1,5 +1,7 @@
 {
-  "port": 8000,
-  "host": "127.0.0.1",
-  "root_host": "requestcatcher.com"
+  "http_port": 80,
+  "https_port": 443,
+  "host": "0.0.0.0",
+  "root_host": "requestcatcher.com",
+  "tls_dir": "/etc/letsencrypt/live/requestcatcher.com"
 }

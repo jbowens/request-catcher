@@ -6,9 +6,11 @@ import (
 )
 
 type Configuration struct {
-	Port     int
-	Host     string
-	RootHost string `json:"root_host"`
+	HTTPPort  int `json:"http_port"`
+	HTTPSPort int `json:"https_port"`
+	Host      string
+	RootHost  string `json:"root_host"`
+	TLSDir    string `json:"tls_dir"`
 }
 
 func LoadConfiguration(filename string) (*Configuration, error) {
