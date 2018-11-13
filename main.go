@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		fatalf("error loading configuration file: %s\n", err)
 	}
+	catcher := catcher.NewCatcher(config)
 
 	tlsconf := &tls.Config{MinVersion: tls.VersionTLS10}
 
@@ -30,6 +31,9 @@ func main() {
 		WriteTimeout: 5 * time.Second,
 		IdleTimeout:  30 * time.Second,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			// Catch HTTP requests too, even if we are redirecting them.
+			catcher.Catch(req)
+
 			w.Header().Set("Connection", "close")
 			url := "https://" + req.Host + req.URL.String()
 			http.Redirect(w, req, url, http.StatusMovedPermanently)
@@ -41,7 +45,7 @@ func main() {
 	fullHost := config.Host + ":" + strconv.Itoa(config.HTTPSPort)
 	server := http.Server{
 		Addr:         fullHost,
-		Handler:      catcher.NewCatcher(config),
+		Handler:      catcher,
 		TLSConfig:    tlsconf,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
