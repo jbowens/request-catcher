@@ -109,9 +109,17 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Catcher) Catch(r *http.Request) {
-	caughtRequest := convertRequest(r)
+	hostString := hostWithoutPort(r.Host)
+	c.hostsMu.Lock()
+	host, ok := c.hosts[hostString]
+	c.hostsMu.Unlock()
+
+	if !ok {
+		// No one is listening, so no reason to catch it.
+		return
+	}
 
 	// Broadcast it to everyone listening for requests on this host
-	host := c.host(caughtRequest.Host)
+	caughtRequest := convertRequest(r)
 	host.broadcast <- caughtRequest
 }
