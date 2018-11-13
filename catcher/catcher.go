@@ -3,6 +3,7 @@ package catcher
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -41,6 +42,13 @@ func NewCatcher(config *Configuration) *Catcher {
 }
 
 func (c *Catcher) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	if strings.HasPrefix(req.Host, "www.") {
+		rw.Header().Set("Connection", "close")
+		url := "https://" + strings.TrimPrefix(req.Host, "www.") + req.URL.String()
+		http.Redirect(rw, req, url, http.StatusMovedPermanently)
+		return
+	}
+
 	c.router.ServeHTTP(rw, req)
 }
 
