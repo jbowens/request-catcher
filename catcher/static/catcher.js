@@ -57,7 +57,7 @@ window.catcher.insertRequest = function(req) {
   };
 
   $(snippetDiv).click(selectFn);
-  if (window.catcher.selector.children().length() == 1) {
+  if (window.catcher.selector.children().length == 1) {
     selectFn();
   }
 };
