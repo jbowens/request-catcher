@@ -18,24 +18,48 @@ window.catcher.connect = function() {
 };
 
 window.catcher.insertRequest = function(req) {
+  window.catcher.noRequests.hide();
   console.log(req);
   var time = new Date(req.time);
 
-  var mainDiv = document.createElement('div');
-  $(mainDiv).addClass('request');
-  $(mainDiv).data('r', req);
+  var snippetDiv = document.createElement('div');
+  $(snippetDiv).addClass('snippet');
+  $(snippetDiv).data('r', req);
 
-  var pre = document.createElement('pre');
-  $(pre).text(req.raw_request);
+  var methodPath = document.createElement('h2');
+  $(methodPath).text(req.method + " " + req.path);
 
-  var metadata = document.createElement('div');
-  $(metadata).addClass('metadata');
-  $(metadata).text("Received at " + window.catcher.formatDate(time));
+  var ts = document.createElement('div');
+  $(metadata).addClass('timestamp');
+  $(metadata).text(window.catcher.formatDate(time));
 
-  $(mainDiv).append(metadata, pre);
+  var remoteAddr = document.createElement('div');
+  $(metadata).addClass('remoteaddr');
+  $(metadata).text(req.remote_addr);
 
-  window.catcher.requests.prepend(mainDiv);
-  window.catcher.noRequests.hide();
+  $(snippetDiv).append(methodPath, ts, remoteAddr);
+  window.catcher.selector.prepend(snippetDiv);
+
+  var selectFn = function() {
+    $("#selector .snippet").removeClass('selected');
+    $(snippetDiv).addClass('selected');
+
+    var mainDiv = document.createElement('div');
+    $(mainDiv).addClass('request');
+    $(mainDiv).data('r', req);
+
+    var pre = document.createElement('pre');
+    $(pre).text(req.raw_request);
+    $(mainDiv).append(pre);
+
+    window.catcher.requests.clear();
+    window.catcher.requests.prepend(mainDiv);
+  };
+
+  $(snippetDiv).click(selectFn);
+  if window.catcher.selector.chilren().length() == 1 {
+    selectFn();
+  }
 };
 
 window.catcher.formatDate = function(date) {
@@ -44,6 +68,7 @@ window.catcher.formatDate = function(date) {
 
 $(document).ready(function() {
   window.catcher.requests = $('#requests');
+  window.catcher.selector = $('#selector');
   window.catcher.noRequests = $('#no-requests');
   $('#hostname').text(window.location.host);
 

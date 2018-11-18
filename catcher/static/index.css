@@ -7,17 +7,15 @@ body, pre {
 h1 {
   color: #000;
   font-family: "Open Sans";
-  padding: 0.25em;
+  padding: 0.75em 1em;
   font-size: 2em;
 }
 
 #requests {
   margin: 1em;
+  float: left;
 }
 
-.request {
-  border-bottom: 1px #e4e4e4 solid;
-}
 .request .metadata {
   font-size: 0.8em;
   margin: 1em 0;
@@ -39,4 +37,27 @@ div#no-requests .code {
   border-radius: 0.25em;
   padding: 0.5em;
   font-family: monospace;
+}
+
+h2 {
+  color: #000;
+  font-family: "Open Sans";
+  margin: 0;
+  font-size: 1.5em;
+}
+#selector {
+  margin: 1em;
+  float: left;
+}
+#selector .snippet {
+    padding: 0.5em;
+    cursor: pointer;
+    min-width: 300px;
+}
+#selector .selected {
+    background: #fafff8;
+}
+.snippet .timestamp, .snippet .remoteaddr {
+  font-size: 0.8em;
+  color: #333;
 }
