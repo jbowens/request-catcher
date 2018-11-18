@@ -30,12 +30,12 @@ window.catcher.insertRequest = function(req) {
   $(methodPath).text(req.method + " " + req.path);
 
   var ts = document.createElement('div');
-  $(metadata).addClass('timestamp');
-  $(metadata).text(window.catcher.formatDate(time));
+  $(ts).addClass('timestamp');
+  $(ts).text(window.catcher.formatDate(time));
 
   var remoteAddr = document.createElement('div');
-  $(metadata).addClass('remoteaddr');
-  $(metadata).text(req.remote_addr);
+  $(remoteAddr).addClass('remoteaddr');
+  $(remoteAddr).text(req.remote_addr);
 
   $(snippetDiv).append(methodPath, ts, remoteAddr);
   window.catcher.selector.prepend(snippetDiv);
