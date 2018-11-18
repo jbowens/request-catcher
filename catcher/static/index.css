@@ -55,7 +55,7 @@ h2 {
     min-width: 300px;
 }
 #selector .selected {
-    background: #fafff8;
+    background: #eff9eb;
 }
 .snippet .timestamp, .snippet .remoteaddr {
   font-size: 0.8em;
