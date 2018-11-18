@@ -9,6 +9,7 @@ import (
 const outputChannelBuffer = 5
 const pingFrequency = 10 * time.Second
 const writeWait = 5 * time.Second
+const pongWait = 60 * time.Second
 const maxMessageSize = 1024
 
 type client struct {
@@ -91,8 +92,9 @@ func (c *client) readLoop() {
 	// We don't care about what the client sends to us, but we need to
 	// read it to keep the connection fresh.
 	c.conn.SetReadLimit(maxMessageSize)
-	c.conn.SetReadDeadline(time.Time{})
+	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(msg string) error {
+		c.conn.SetReadDeadline(time.Now().Add(pongWait))
 		return nil
 	})
 	for {
