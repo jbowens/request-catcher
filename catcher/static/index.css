@@ -21,6 +21,11 @@ h1 {
   margin: 1em 0;
 }
 
+#requests .request pre {
+  max-width: 600px;
+  overflow-x: auto;
+}
+
 div#no-requests {
   padding: 100px;
   text-align: center;
