@@ -52,7 +52,7 @@ window.catcher.insertRequest = function(req) {
     $(pre).text(req.raw_request);
     $(mainDiv).append(pre);
 
-    window.catcher.requests.clear();
+    window.catcher.requests.empty();
     window.catcher.requests.prepend(mainDiv);
   };
 
