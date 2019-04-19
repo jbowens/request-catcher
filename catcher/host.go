@@ -28,7 +28,16 @@ func (h *Host) broadcaster() {
 	for req := range h.broadcast {
 		h.clients.Range(func(conn, untypedClient interface{}) bool {
 			typedClient := untypedClient.(*client)
-			typedClient.output <- req
+			select {
+			case typedClient.output <- req:
+			case <-typedClient.closed:
+				// a closed client might still be registered
+				// on h.clients if the connection is closed
+				// before the *client is even inserted into
+				// the clients Map. If it's closed, we skip
+				// it and remove it from the map.
+				h.clients.Delete(conn)
+			}
 			return true
 		})
 	}
