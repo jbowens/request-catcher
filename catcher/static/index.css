@@ -88,6 +88,9 @@ h2 {
   width: 100%;
   height: 2.5rem;
 }
+#referral a { color: #111; }
 #referral a:hover strong  {
   color: #0069FF;
 }
+
+.clear { clear: both; }
