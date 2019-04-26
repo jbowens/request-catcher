@@ -2,7 +2,6 @@ window.root = window.root || {};
 
 $(document).ready(function() {
   $('#root-host').text(window.location.host);
-
   $('#new-catcher').submit(function(e) {
     e.preventDefault();
 
@@ -12,4 +11,5 @@ $(document).ready(function() {
       window.location = url;
     }
   });
+  $('#subdomain').focus();
 });

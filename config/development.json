@@ -1,7 +1,7 @@
 {
   "http_port": 80,
   "https_port": 80,
-  "host": "localhost",
-  "root_host": "lvh.me",
+  "host": "127.0.0.1",
+  "root_host": "127.0.0.1",
   "tls_dir": "/Users/jackson/tls"
 }
