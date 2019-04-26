@@ -8,21 +8,26 @@
     <script type="text/javascript" src="/static/catcher.js?v=0.2"></script>
   </head>
   <body>
-    <div id="header">
-      <h1>request catcher</h1>
-    </div>
+    <div id="page">
+      <div id="content">
+        <div id="header">
+          <h1>request catcher</h1>
+        </div>
 
-    <div id="selector"></div>
+        <div id="selector"></div>
 
-    <div id="no-requests">
-      <div class="message">No requests have been received yet :(</div>
-      <div class="try-it">
-        <span class="code">
-          curl -X POST -d 'Hello World!' https://<span id="hostname">requestcatcher.com</span>/test
-        </span>
+        <div id="no-requests">
+          <div class="message">No requests have been received yet :(</div>
+          <div class="try-it">
+            <span class="code">
+              curl -X POST -d 'Hello World!' https://<span id="hostname">requestcatcher.com</span>/test
+            </span>
+          </div>
+        </div>
+        <div id="requests"></div>
       </div>
+      <div id="referral"><a href="https://m.do.co/c/fd00053f4fc6" target="_blank">Hosted by <strong>DigitalOcean</strong>. Get a $100 credit and support Request Catcher.</a></div>
     </div>
-    <div id="requests"></div>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
