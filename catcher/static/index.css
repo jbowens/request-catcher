@@ -13,7 +13,6 @@ body, pre {
 }
 
 #content {
-  padding-bottom: 2.5rem;
   flex: 1;
 }
 
@@ -86,8 +85,8 @@ h2 {
   text-align: center;
   font-family: "Open Sans";
   padding: 0.75em 1em;
-  font-size: 0.6em;
-  margin-top: 2em;
+  font-size: 0.75em;
+  margin: 2em 0;
 }
 #referral a {
   color: #111;
