@@ -7,6 +7,8 @@ body, pre {
 #page {
   position: relative;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 #content {
@@ -88,7 +90,10 @@ h2 {
   width: 100%;
   height: 2.5rem;
 }
-#referral a { color: #111; }
+#referral a {
+  color: #111;
+  text-decoration: none;
+}
 #referral a:hover strong  {
   color: #0069FF;
 }
