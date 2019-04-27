@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -36,13 +37,22 @@ func NewCatcher(config *Configuration) *Catcher {
 	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
-	c.router.PathPrefix("/static").Handler(
-		http.StripPrefix("/static", http.FileServer(http.Dir("catcher/static"))))
+	c.router.PathPrefix("/assets").Handler(http.StripPrefix("/assets",
+		withCacheHeaders(http.FileServer(http.Dir("frontend/dist")))))
 	c.router.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "catcher/static/favicon.ico")
+		http.ServeFile(w, r, "frontend/favicon.ico")
 	})
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
 	return c
+}
+
+func withCacheHeaders(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		oneYear := time.Now().Add(time.Hour * 24 * 365).Format(time.RFC3339)
+		w.Header().Set("Cache-Control", "public, max-age=31536000")
+		w.Header().Set("Expires", oneYear)
+		h.ServeHTTP(w, r)
+	})
 }
 
 func (c *Catcher) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
@@ -70,7 +80,7 @@ func (c *Catcher) host(hostString string) *Host {
 }
 
 func (c *Catcher) rootHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "catcher/templates/root.html")
+	http.ServeFile(w, r, "frontend/dist/root.html")
 }
 
 func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,16 +89,10 @@ func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
 	// the index to be hosted at requestcatcher.com.
 	c.Catch(r)
 
-	http.ServeFile(w, r, "catcher/templates/index.html")
+	http.ServeFile(w, r, "frontend/dist/index.html")
 }
 
 func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
-	if r.RequestURI == "/favicon.ico" {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "not found")
-		return
-	}
-
 	c.Catch(r)
 
 	// Respond to the request
