@@ -36,7 +36,11 @@ func NewCatcher(config *Configuration) *Catcher {
 	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
-	c.router.PathPrefix("/static").Handler(http.FileServer(http.Dir("catcher/")))
+	c.router.PathPrefix("/static").Handler(
+		http.StripPrefix("/static", http.FileServer(http.Dir("catcher/static"))))
+	c.router.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "catcher/static/favicon.ico")
+	})
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
 	return c
 }

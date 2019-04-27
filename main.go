@@ -61,10 +61,15 @@ func main() {
 	// require a process restart.
 	// NOTE: can't use autocert because we need to use DNS challenges
 	// to acquire wildcard certificates.
-	err = server.ListenAndServeTLS(
-		filepath.Join(config.TLSDir, "fullchain.pem"),
-		filepath.Join(config.TLSDir, "privkey.pem"),
-	)
+
+	if config.TLSDir != "" {
+		err = server.ListenAndServeTLS(
+			filepath.Join(config.TLSDir, "fullchain.pem"),
+			filepath.Join(config.TLSDir, "privkey.pem"),
+		)
+	} else {
+		err = server.ListenAndServe()
+	}
 	if err != nil {
 		fatalf("error listening on %s: %s\n", fullHost, err)
 	}

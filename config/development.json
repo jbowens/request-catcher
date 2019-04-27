@@ -2,6 +2,5 @@
   "http_port": 80,
   "https_port": 80,
   "host": "127.0.0.1",
-  "root_host": "127.0.0.1",
-  "tls_dir": "/Users/jackson/tls"
+  "root_host": "requestcatcher"
 }
