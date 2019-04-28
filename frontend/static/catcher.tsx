@@ -1,17 +1,25 @@
+import * as React from 'react'
+import { render } from 'react-dom'
+import { RequestDetail } from '~/components/request_detail'
+
 window.catcher = window.catcher || {};
 
 window.catcher.connect = function() {
     if (window.WebSocket) {
-        conn = new WebSocket("wss://" + window.location.host + "/init-client");
-        conn.onclose = function(evt) {
-            console.log("connection closed", evt);
-            // Reconnect after a pause.
-            setTimeout(window.catcher.connect, 1000);
-        };
-        conn.onmessage = function(evt) {
-            var req = JSON.parse(evt.data);
-            window.catcher.insertRequest(req);
-        };
+      var protocol = "wss://";
+      if (window.location.protocol === "http:") {
+        protocol = "ws://";
+      }
+      const conn = new WebSocket(protocol + window.location.host + "/init-client");
+      conn.onclose = function(evt) {
+        console.log("connection closed", evt);
+        // Reconnect after a pause.
+        setTimeout(window.catcher.connect, 1000);
+      };
+      conn.onmessage = function(evt) {
+        var req = JSON.parse(evt.data);
+        window.catcher.insertRequest(req);
+      };
     } else {
       console.log("Your browser doesn't support websockets.");
     }
@@ -44,16 +52,10 @@ window.catcher.insertRequest = function(req) {
     $("#selector .snippet").removeClass('selected');
     $(snippetDiv).addClass('selected');
 
-    var mainDiv = document.createElement('div');
-    $(mainDiv).addClass('request');
-    $(mainDiv).data('r', req);
-
-    var pre = document.createElement('pre');
-    $(pre).text(req.raw_request);
-    $(mainDiv).append(pre);
-
-    window.catcher.requests.empty();
-    window.catcher.requests.prepend(mainDiv);
+    render(
+        <RequestDetail request={req} />,
+        document.getElementById('requests')
+    );
   };
 
   $(snippetDiv).click(selectFn);
