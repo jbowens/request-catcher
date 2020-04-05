@@ -5,11 +5,11 @@
   "license": "MIT",
   "devDependencies": {
     "cssnano": "^4.1.10",
-    "typescript": "^3.4.5"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-redux": "^7.0.2"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0"
   }
 }
