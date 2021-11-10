@@ -17,7 +17,6 @@ body, pre {
 }
 
 h1 {
-  color: #000;
   font-family: "Open Sans";
   padding: 0.75em 1em;
   font-size: 2em;
@@ -58,7 +57,6 @@ div#no-requests .code {
 }
 
 h2 {
-  color: #000;
   font-family: "Open Sans";
   margin: 0;
   font-size: 1.5em;
@@ -73,15 +71,14 @@ h2 {
     min-width: 300px;
 }
 #selector .selected {
-    background: #eff9eb;
+  background: rgba(74, 250, 3, 0.06);
 }
 .snippet .timestamp, .snippet .remoteaddr {
   font-size: 0.8em;
-  color: #333;
+  opacity: .8;
 }
 
 #referral {
-  color: #000;
   text-align: center;
   font-family: "Open Sans";
   padding: 0.75em 1em;
@@ -89,7 +86,8 @@ h2 {
   margin: 2em 0;
 }
 #referral a {
-  color: #111;
+  color: inherit;
+  opacity: .9;
   text-decoration: none;
 }
 #referral a:hover strong  {
