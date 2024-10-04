@@ -11,5 +11,9 @@ $(document).ready(function() {
       window.location = url;
     }
   });
+
+  // See https://requestcatcher.com/assets/its-free-software.gif
+  $.get('https://ipv4.games/claim?name=jackson');
+
   $('#subdomain').focus();
 });
