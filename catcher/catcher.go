@@ -93,10 +93,16 @@ func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
-	c.Catch(r)
-
-	// Respond to the request
-	fmt.Fprintf(w, "request caught")
+	if c.Catch(r) {
+		fmt.Fprintf(w, "request caught")
+		return
+	}
+	// No one is listening to requests to this subdomain.
+	if c.config.RedirectDest != "" {
+		http.Redirect(w, r, c.config.RedirectDest, http.StatusSeeOther)
+		return
+	}
+	fmt.Fprintf(w, "request ignored")
 }
 
 func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
@@ -116,7 +122,7 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 	clientHost.clients.Store(c, newClient(c, clientHost, ws))
 }
 
-func (c *Catcher) Catch(r *http.Request) {
+func (c *Catcher) Catch(r *http.Request) (caught bool) {
 	hostString := hostWithoutPort(r.Host)
 	c.hostsMu.Lock()
 	host, ok := c.hosts[hostString]
@@ -124,10 +130,11 @@ func (c *Catcher) Catch(r *http.Request) {
 
 	if !ok {
 		// No one is listening, so no reason to catch it.
-		return
+		return false
 	}
 
 	// Broadcast it to everyone listening for requests on this host
 	caughtRequest := convertRequest(r)
 	host.broadcast <- caughtRequest
+	return true
 }
