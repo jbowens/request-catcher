@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -20,6 +21,14 @@ type Catcher struct {
 
 	hostsMu sync.Mutex
 	hosts   map[string]*Host
+
+	stats struct {
+		processStart       time.Time
+		requestsIndex      atomic.Uint64
+		requestsCaught     atomic.Uint64
+		requestsIgnored    atomic.Uint64
+		requestsClientInit atomic.Uint64
+	}
 }
 
 func NewCatcher(config *Configuration) *Catcher {
@@ -34,6 +43,7 @@ func NewCatcher(config *Configuration) *Catcher {
 
 		hosts: make(map[string]*Host),
 	}
+	c.stats.processStart = time.Now()
 	c.router.HandleFunc("/", c.rootHandler).Host(c.config.RootHost)
 	c.router.HandleFunc("/", c.indexHandler)
 	c.router.HandleFunc("/init-client", c.initClient)
@@ -42,6 +52,7 @@ func NewCatcher(config *Configuration) *Catcher {
 	c.router.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "frontend/favicon.ico")
 	})
+	c.router.HandleFunc("/statusz", c.status)
 	c.router.NotFoundHandler = http.HandlerFunc(c.catchRequests)
 	return c
 }
@@ -88,15 +99,17 @@ func (c *Catcher) indexHandler(w http.ResponseWriter, r *http.Request) {
 	// to be caught. For now, just catch those as well. Later I should move
 	// the index to be hosted at requestcatcher.com.
 	c.Catch(r)
-
+	c.stats.requestsIndex.Add(1)
 	http.ServeFile(w, r, "frontend/dist/index.html")
 }
 
 func (c *Catcher) catchRequests(w http.ResponseWriter, r *http.Request) {
 	if c.Catch(r) {
+		c.stats.requestsCaught.Add(1)
 		fmt.Fprintf(w, "request caught")
 		return
 	}
+	c.stats.requestsIgnored.Add(1)
 	// No one is listening to requests to this subdomain.
 	if c.config.RedirectDest != "" {
 		http.Redirect(w, r, c.config.RedirectDest, http.StatusSeeOther)
@@ -110,6 +123,7 @@ func (c *Catcher) initClient(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", 405)
 		return
 	}
+	c.stats.requestsClientInit.Add(1)
 
 	ws, err := c.upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -137,4 +151,16 @@ func (c *Catcher) Catch(r *http.Request) (caught bool) {
 	caughtRequest := convertRequest(r)
 	host.broadcast <- caughtRequest
 	return true
+}
+
+func (c *Catcher) status(w http.ResponseWriter, r *http.Request) {
+	c.hostsMu.Lock()
+	countHosts := len(c.hosts)
+	c.hostsMu.Unlock()
+	fmt.Fprintf(w, "uptime: %d\n", int(time.Since(c.stats.processStart).Seconds()))
+	fmt.Fprintf(w, "hosts: %d\n", countHosts)
+	fmt.Fprintf(w, "index: %d\n", c.stats.requestsIndex.Load())
+	fmt.Fprintf(w, "caught: %d\n", c.stats.requestsCaught.Load())
+	fmt.Fprintf(w, "ignored: %d\n", c.stats.requestsIgnored.Load())
+	fmt.Fprintf(w, "client-init: %d\n", c.stats.requestsClientInit.Load())
 }
